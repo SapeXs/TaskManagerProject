@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <string>
-#include <utility>
 
 #include "../core/task_priority.h"
 #include "../core/task_with_progress.h"
@@ -17,7 +16,7 @@ class SavingsTask : public TaskWithProgress<PercentageProgress> {
               int64_t target_value);
 
   std::string GetTypeName() const override;
-  
+
   int64_t GetCurrentValue() const noexcept;
   int64_t GetTargetValue() const noexcept;
 
