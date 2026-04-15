@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "../core/task_state.h"
+#include "core/task_state.h"
 
 class TextProgress {
  public:

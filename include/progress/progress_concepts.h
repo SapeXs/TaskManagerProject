@@ -3,7 +3,7 @@
 #include <concepts>
 #include <string>
 
-#include "../core/task_state.h"
+#include "core/task_state.h"
 
 template <class T>
 concept ProgressLike = requires(const T& progress) {

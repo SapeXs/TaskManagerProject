@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 
-#include "../core/task_state.h"
+#include "core/task_state.h"
 
 class TimeLeftProgress {
  public:

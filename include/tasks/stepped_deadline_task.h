@@ -4,10 +4,10 @@
 #include <string>
 #include <vector>
 
-#include "../core/task_priority.h"
-#include "../core/task_with_progress.h"
-#include "../progress/text_progress.h"
-#include "../core/task_state.h"
+#include "core/task_priority.h"
+#include "core/task_with_progress.h"
+#include "progress/text_progress.h"
+#include "core/task_state.h"
 
 class SteppedDeadlineTask : public TaskWithProgress<TextProgress> {
  public:

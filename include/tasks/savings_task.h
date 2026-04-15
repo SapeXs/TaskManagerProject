@@ -3,9 +3,9 @@
 #include <cstdint>
 #include <string>
 
-#include "../core/task_priority.h"
-#include "../core/task_with_progress.h"
-#include "../progress/percentage_progress.h"
+#include "core/task_priority.h"
+#include "core/task_with_progress.h"
+#include "progress/percentage_progress.h"
 
 class SavingsTask : public TaskWithProgress<PercentageProgress> {
  public:

@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "../tasks/stepped_deadline_task.h"
+#include "tasks/stepped_deadline_task.h"
 
 class FinalDeadlineTask : public SteppedDeadlineTask {
  public:
