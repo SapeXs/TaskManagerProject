@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 
-#include "../tasks/recurring_task.h"
+#include "tasks/recurring_task.h"
 
 class BoundedRecurringTask : public RecurringTask {
  public:
@@ -12,9 +12,11 @@ class BoundedRecurringTask : public RecurringTask {
                        int64_t seconds_left, int64_t repeat_interval_seconds,
                        int32_t repeats_left);
 
-  std::string GetTypeName() const override;
+  std::string GetTypeName() const;
 
   int32_t GetRepeatsLeft() const noexcept;
+  void SetRepeatsLeft(int32_t repeats);
+  void ReduceRepeatsLeft();
   bool CanRepeat() const noexcept;
   void CompleteOccurrence() noexcept;
 
