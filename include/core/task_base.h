@@ -24,7 +24,6 @@ public:
   virtual std::string GetTypeName() const = 0;
   virtual TaskState GetState() const = 0;
   virtual std::string GetProgressString() const = 0;
-  virtual void Print(std::ostream &out) const = 0;
 
   int32_t GetId() const noexcept;
   const std::string &GetTitle() const noexcept;

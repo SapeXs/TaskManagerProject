@@ -3,9 +3,9 @@
 #include <cstdint>
 #include <string>
 
-#include "../core/task_priority.h"
-#include "../core/task_with_progress.h"
-#include "../progress/time_left_progress.h"
+#include "core/task_priority.h"
+#include "core/task_with_progress.h"
+#include "progress/time_left_progress.h"
 
 class RecurringTask : public TaskWithProgress<TimeLeftProgress> {
  public:
