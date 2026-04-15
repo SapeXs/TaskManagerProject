@@ -22,10 +22,10 @@ public:
 
   TaskWithProgress(int32_t id, std::string title, std::string description,
                    TaskPriority priority, TagContainer tags,
-                   ProgressType progress)
+                   int64_t seconds_left)
       : TaskBase(id, std::move(title), std::move(description), priority,
                  std::move(tags)),
-        progress_(std::move(progress)) {}
+        progress_(seconds_left) {}
 
   /*~TaskWithProgress() override = default;
   TaskWithProgress(const TaskWithProgress&) = default;
@@ -40,9 +40,7 @@ public:
   }
 
 protected:
-  const ProgressType &GetProgress() const noexcept { return progress_; }
-
-  void SetProgress(ProgressType progress) { progress_ = std::move(progress); }
+  ProgressType& GetProgress() { return progress_; }
 
 private:
   ProgressType progress_;
