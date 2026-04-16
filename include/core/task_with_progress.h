@@ -22,8 +22,8 @@ public:
                    TaskPriority priority, TagContainer tags,
                    int64_t seconds_left);
 
-  TaskState GetState() const;
-  std::string GetProgressString() const;
+  TaskState GetState() const override;
+  std::string GetProgressString() const override;
 
 protected:
   ProgressType& GetProgress();
