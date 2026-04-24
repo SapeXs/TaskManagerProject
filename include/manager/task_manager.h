@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -14,8 +15,8 @@ class TaskManager {
   using TaskPtr = std::unique_ptr<TaskBase>;
   using TaskList = std::vector<TaskPtr>;
 
-  bool AddTask(TaskPtr task);
-  bool RemoveTask(int32_t id);
+  void AddTask(TaskPtr task);
+  void RemoveTask(int32_t id);
 
   TaskBase* FindTaskById(int32_t id) noexcept;
   const TaskBase* FindTaskById(int32_t id) const noexcept;
@@ -23,9 +24,9 @@ class TaskManager {
   std::vector<TaskBase*> GetAllTasks() noexcept;
   std::vector<const TaskBase*> GetAllTasks() const noexcept;
 
-  std::vector<TaskBase*> FilterByState(TaskState state) noexcept;
-  std::vector<TaskBase*> FilterByPriority(TaskPriority priority) noexcept;
-  std::vector<TaskBase*> FilterByTag(const std::string& tag) noexcept;
+  std::vector<TaskBase*> FilterByState(TaskState& state) noexcept;
+  std::vector<TaskBase*> FilterByPriority(TaskPriority& priority) noexcept;
+  std::vector<TaskBase*> FilterByTag(std::string& tag) noexcept;
 
   template <class Predicate>
   std::vector<TaskBase*> Filter(Predicate predicate) noexcept {
