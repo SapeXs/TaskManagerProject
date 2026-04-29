@@ -1,0 +1,60 @@
+#include "core/task_base.h"
+
+using TagContainer = std::unordered_set<std::string>;
+
+int32_t TaskBase::GetId() const noexcept {
+    return id_;
+}
+
+const std::string& TaskBase::GetTitle() const noexcept {
+    return title_;
+}
+
+const std::string& TaskBase::GetDescription() const noexcept {
+    return description_;
+}
+
+TaskPriority TaskBase::GetPriority() const noexcept {
+    return priority_;
+}
+
+const TagContainer& TaskBase::GetTags() const noexcept {
+    return tags_;
+}
+
+bool TaskBase::HasTag(std::string& tag) const {
+    if (tags_.find(tag) != tags_.end()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void TaskBase::AddTag(std::string& tag) {
+    tags_.insert(tag);
+}
+
+void TaskBase::RemoveTag(std::string& tag) {
+    tags_.erase(tag);
+}
+
+void TaskBase::SetTitle(std::string& title) {
+    title_ = title;
+}
+
+void TaskBase::SetDescription(std::string& description) {
+    description_ = description;
+}
+
+void TaskBase::SetPriority(TaskPriority& priority) {
+    priority_ = priority;
+}
+
+void TaskBase::SetTags(TagContainer& tags) {
+    tags_ = tags;
+}
+
+void TaskBase::SetTags(std::string& tag) {
+    tags_.clear();
+    tags_.insert(tag);
+}
