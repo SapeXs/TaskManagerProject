@@ -1,6 +1,9 @@
 #pragma once
 
+#include <chrono>
 #include <cstdint>
+#include <ctime>
+#include <iomanip>
 #include <string>
 #include <vector>
 
@@ -32,4 +35,4 @@ class SteppedDeadlineTask : public TaskWithProgress<TextProgress> {
  private:
   std::vector<std::string> step_texts_;
   std::size_t current_step_;
-};
+}
