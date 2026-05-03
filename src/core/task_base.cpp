@@ -2,6 +2,14 @@
 
 using TagContainer = std::unordered_set<std::string>;
 
+TaskBase::TaskBase(int32_t id, std::string title, std::string description,
+                   TaskPriority priority, TagContainer tags)
+    : id_(id),
+      title_(std::move(title)),
+      description_(std::move(description)),
+      priority_(priority),
+      tags_(std::move(tags)) {}
+
 int32_t TaskBase::GetId() const noexcept {
     return id_;
 }
