@@ -16,8 +16,6 @@ void TaskManager::AddTask(TaskPtr task) {
   TaskBase* raw_task = task.get();
   tasks_.push_back(std::move(task));
   task_index_[id] = raw_task;
-
-  return;
 }
 
 void TaskManager::RemoveTask(int32_t id) {
@@ -30,7 +28,7 @@ void TaskManager::RemoveTask(int32_t id) {
 
   tasks_.erase(std::remove_if(tasks_.begin(), tasks_.end(),
                               [id](const TaskPtr& task) {
-                                return task != nullptr &task->GetId() == id;
+                                return task != nullptr && task->GetId() == id;
                               }),
                tasks_.end());
 
