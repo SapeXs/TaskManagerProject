@@ -4,15 +4,10 @@
 #include <cstdint>
 #include <string>
 
+#include "progress_concepts.h"
 #include "task_base.h"
 #include "task_priority.h"
 #include "task_state.h"
-
-template <class ProgressType>
-concept ProgressLike = requires(const ProgressType &progress) {
-  { progress.ToString() } -> std::same_as<std::string>;
-  { progress.GetState() } -> std::same_as<TaskState>;
-};
 
 template <ProgressLike ProgressType> class TaskWithProgress : public TaskBase {
 public:
