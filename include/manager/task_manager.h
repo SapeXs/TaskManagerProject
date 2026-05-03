@@ -30,6 +30,7 @@ class TaskManager {
 
   template <class Predicate>
   std::vector<TaskBase*> Filter(Predicate predicate) noexcept {
+    result.reserve(tasks_.size());
     std::vector<TaskBase*> result;
 
     for (const auto& task : tasks_) {
