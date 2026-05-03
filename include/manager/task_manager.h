@@ -6,9 +6,9 @@
 #include <unordered_map>
 #include <vector>
 
-#include "../core/task_base.h"
-#include "../core/task_priority.h"
-#include "../core/task_state.h"
+#include "core/task_base.h"
+#include "core/task_priority.h"
+#include "core/task_state.h"
 
 class TaskManager {
  public:
