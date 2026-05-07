@@ -2,6 +2,20 @@
 
 #include <algorithm>
 
+template <class Predicate>
+std::vector<TaskBase*> TaskManager::Filter(Predicate predicate) noexcept  {
+  result.reserve(tasks_.size());
+  std::vector<TaskBase*> result;
+
+  for (const auto& task : tasks_) {
+    if (task != nullptr && predicate(*task)) {
+      result.push_back(task.get());
+    }
+  }
+
+  return result;
+}
+
 void TaskManager::AddTask(TaskPtr task) {
   if (task == nullptr) {
     return;

@@ -29,18 +29,7 @@ class TaskManager {
   std::vector<TaskBase*> FilterByTag(std::string& tag) noexcept;
 
   template <class Predicate>
-  std::vector<TaskBase*> Filter(Predicate predicate) noexcept {
-    result.reserve(tasks_.size());
-    std::vector<TaskBase*> result;
-
-    for (const auto& task : tasks_) {
-      if (task != nullptr && predicate(*task)) {
-        result.push_back(task.get());
-      }
-    }
-
-    return result;
-  }
+  std::vector<TaskBase*> Filter(Predicate predicate) noexcept;
 
   std::size_t Size() const noexcept;
   bool Empty() const noexcept;
