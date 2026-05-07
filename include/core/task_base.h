@@ -32,11 +32,11 @@ public:
   void RemoveTag(const std::string& tag);
 
 protected:
-  void SetTitle(std::string& title);
-  void SetDescription(std::string& description);
+  void SetTitle(std::string title);
+  void SetDescription(std::string description);
   void SetPriority(TaskPriority priority);
-  void SetTags(TagContainer& tags);
-  void SetTags(std::string& tag);
+  void SetTags(TagContainer tags);
+  void SetTags(std::string tag);
 
 private:
   int32_t id_;
