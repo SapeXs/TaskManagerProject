@@ -4,8 +4,8 @@
 
 template <class Predicate>
 std::vector<TaskBase*> TaskManager::Filter(Predicate predicate) noexcept  {
-  result.reserve(tasks_.size());
   std::vector<TaskBase*> result;
+  result.reserve(tasks_.size());
 
   for (const auto& task : tasks_) {
     if (task != nullptr && predicate(*task)) {
@@ -93,20 +93,20 @@ std::vector<const TaskBase*> TaskManager::GetAllTasks() const noexcept {
   return result;
 }
 
-std::vector<TaskBase*> TaskManager::FilterByState(TaskState& state) noexcept {
+std::vector<TaskBase*> TaskManager::FilterByState(TaskState state) noexcept {
   return Filter(
       [&state](const TaskBase& task) { return task.GetState() == state; });
 }
 
 std::vector<TaskBase*>
-TaskManager::FilterByPriority(TaskPriority& priority) noexcept {
+TaskManager::FilterByPriority(TaskPriority priority) noexcept {
   return Filter([&priority](const TaskBase& task) {
     return task.GetPriority() == priority;
   });
 }
 
 std::vector<TaskBase*>
-TaskManager::FilterByTag(std::string& tag) noexcept {
+TaskManager::FilterByTag(const std::string& tag) noexcept {
   return Filter([&tag](const TaskBase& task) { return task.HasTag(tag); });
 }
 
