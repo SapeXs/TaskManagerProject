@@ -24,9 +24,9 @@ class TaskManager {
   std::vector<TaskBase*> GetAllTasks() noexcept;
   std::vector<const TaskBase*> GetAllTasks() const noexcept;
 
-  std::vector<TaskBase*> FilterByState(TaskState& state) noexcept;
-  std::vector<TaskBase*> FilterByPriority(TaskPriority& priority) noexcept;
-  std::vector<TaskBase*> FilterByTag(std::string& tag) noexcept;
+  std::vector<TaskBase*> FilterByState(TaskState state) noexcept;
+  std::vector<TaskBase*> FilterByPriority(TaskPriority priority) noexcept;
+  std::vector<TaskBase*> FilterByTag(const std::string& tag) noexcept;
 
   template <class Predicate>
   std::vector<TaskBase*> Filter(Predicate predicate) noexcept;
