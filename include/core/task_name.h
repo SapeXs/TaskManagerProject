@@ -1,12 +1,12 @@
 #pragma once
 
-#include <string>;
+#include <string_view>
 
 namespace {
-  const std::string kNameBoundedRecurringTask = "Bounded Recurring Task";
-  const std::string kNameFinalDeadlineTask = "Final Deadline Task";
-  const std::string kNameRecurringTask = "Recurring Task";
-  const std::string kNameReminderTask = "Reminder Task";
-  const std::string kNameSavingTask = "Saving Task";
-  const std::string kNameSteppedDeadlineTask = "Stepped Deadline Task";
+  inline constexpr std::string_view kNameBoundedRecurringTask = "Bounded Recurring Task";
+  inline constexpr std::string_view kNameFinalDeadlineTask = "Final Deadline Task";
+  inline constexpr std::string_view kNameRecurringTask = "Recurring Task";
+  inline constexpr std::string_view kNameReminderTask = "Reminder Task";
+  inline constexpr std::string_view kNameSavingTask = "Saving Task";
+  inline constexpr std::string_view kNameSteppedDeadlineTask = "Stepped Deadline Task";
 }
