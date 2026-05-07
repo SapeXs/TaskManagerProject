@@ -1,4 +1,5 @@
 #include "tasks/reminder_task.h"
+#include "core/task_name.h"
 
 ReminderTask::ReminderTask(int32_t id, std::string title,
                            std::string description, TaskPriority priority,
@@ -8,7 +9,7 @@ ReminderTask::ReminderTask(int32_t id, std::string title,
                                          std::move(tags), seconds_left) {}
 
 std::string ReminderTask::GetTypeName() const {
-    return "ReminderTsk";
+    return kNameReminderTask;
 }
 
 void ReminderTask::SetSecondsLeft(int64_t seconds_left) noexcept {

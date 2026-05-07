@@ -1,4 +1,5 @@
 #include "tasks/recurring_task.h"
+#include "core/task_name.h"
 
 RecurringTask::RecurringTask(int32_t id, std::string title,
                              std::string description, TaskPriority priority,
@@ -10,7 +11,7 @@ RecurringTask::RecurringTask(int32_t id, std::string title,
       repeat_interval_seconds_(repeat_interval_seconds) {}
 
 std::string RecurringTask::GetTypeName() const {
-    return "RecurringTask";
+    return kNameRecurringTask;
 }
 
 int64_t RecurringTask::GetRepeatIntervalSeconds() const noexcept {

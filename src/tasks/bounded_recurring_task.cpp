@@ -1,4 +1,5 @@
 #include "tasks/bounded_recurring_task.h"
+#include "core/task_name.h"
 
 BoundedRecurringTask::BoundedRecurringTask(int32_t id, std::string title, std::string description,
                        TaskPriority priority, TagContainer tags,
@@ -6,7 +7,7 @@ BoundedRecurringTask::BoundedRecurringTask(int32_t id, std::string title, std::s
                        int32_t repeats_left) : RecurringTask(id, title, description, priority, tags, seconds_left, repeat_interval_seconds), repeats_left_(repeats_left) {}
 
 std::string BoundedRecurringTask::GetTypeName() const {
-    return "BoundedRecurringTask";
+    return kNameBoundedRecurringTask;
 }
 
 int32_t BoundedRecurringTask::GetRepeatsLeft() const {
