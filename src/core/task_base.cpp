@@ -30,7 +30,7 @@ const TagContainer& TaskBase::GetTags() const noexcept {
     return tags_;
 }
 
-bool TaskBase::HasTag(std::string& tag) const {
+bool TaskBase::HasTag(const std::string& tag) const {
     if (tags_.find(tag) != tags_.end()) {
         return true;
     } else {
@@ -38,11 +38,11 @@ bool TaskBase::HasTag(std::string& tag) const {
     }
 }
 
-void TaskBase::AddTag(std::string& tag) {
+void TaskBase::AddTag(const std::string& tag) {
     tags_.insert(tag);
 }
 
-void TaskBase::RemoveTag(std::string& tag) {
+void TaskBase::RemoveTag(const std::string& tag) {
     tags_.erase(tag);
 }
 
@@ -54,7 +54,7 @@ void TaskBase::SetDescription(std::string& description) {
     description_ = description;
 }
 
-void TaskBase::SetPriority(TaskPriority& priority) {
+void TaskBase::SetPriority(TaskPriority priority) {
     priority_ = priority;
 }
 
