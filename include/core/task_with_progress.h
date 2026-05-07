@@ -3,6 +3,7 @@
 #include <concepts>
 #include <cstdint>
 #include <string>
+#include <utility>
 
 #include "progress/progress_concepts.h"
 #include "task_base.h"
@@ -13,8 +14,9 @@ template <ProgressLike ProgressType> class TaskWithProgress : public TaskBase {
 public:
   using TagContainer = TaskBase::TagContainer;
 
+  template <class... ProgressArgs>
   TaskWithProgress(int32_t id, std::string title, std::string description,
-                   TaskPriority priority, TagContainer tags);
+                   TaskPriority priority, TagContainer tags, ProgressArgs&&... progress_args);
 
   TaskState GetState() const override;
   std::string GetProgressString() const override;
