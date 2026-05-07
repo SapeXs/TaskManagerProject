@@ -6,11 +6,9 @@ template <ProgressLike ProgressType>
 TaskWithProgress<ProgressType>::TaskWithProgress(int32_t id, std::string title,
                                                  std::string description,
                                                  TaskPriority priority,
-                                                 TagContainer tags,
-                                                 int64_t seconds_left)
+                                                 TagContainer tags)
     : TaskBase(id, std::move(title), std::move(description), priority,
-               std::move(tags)),
-      progress_(seconds_left){};
+               std::move(tags)){};
 
 template <ProgressLike ProgressType>
 TaskState TaskWithProgress<ProgressType>::GetState() const {

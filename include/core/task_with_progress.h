@@ -14,8 +14,7 @@ public:
   using TagContainer = TaskBase::TagContainer;
 
   TaskWithProgress(int32_t id, std::string title, std::string description,
-                   TaskPriority priority, TagContainer tags,
-                   int64_t seconds_left);
+                   TaskPriority priority, TagContainer tags);
 
   TaskState GetState() const override;
   std::string GetProgressString() const override;
