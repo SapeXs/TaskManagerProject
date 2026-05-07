@@ -9,7 +9,7 @@ std::vector<TaskBase*> TaskManager::Filter(Predicate predicate) noexcept  {
 
   for (const auto& task : tasks_) {
     if (task != nullptr && predicate(*task)) {
-      result.push_back(task.get());
+      result.emplace_back(task.get());
     }
   }
 
@@ -73,7 +73,7 @@ std::vector<TaskBase*> TaskManager::GetAllTasks() noexcept {
 
   for (const auto& task : tasks_) {
     if (task != nullptr) {
-      result.push_back(task.get());
+      result.emplace_back(task.get());
     }
   }
 
@@ -86,7 +86,7 @@ std::vector<const TaskBase*> TaskManager::GetAllTasks() const noexcept {
 
   for (const auto& task : tasks_) {
     if (task != nullptr) {
-      result.push_back(task.get());
+      result.emplace_back(task.get());
     }
   }
 
