@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <string>
 
-#include "progress_concepts.h"
+#include "progress/progress_concepts.h"
 #include "task_base.h"
 #include "task_priority.h"
 #include "task_state.h"
