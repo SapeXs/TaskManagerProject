@@ -46,23 +46,23 @@ void TaskBase::RemoveTag(const std::string& tag) {
     tags_.erase(tag);
 }
 
-void TaskBase::SetTitle(std::string& title) {
-    title_ = title;
+void TaskBase::SetTitle(std::string title) {
+    title_ = std::move(title);
 }
 
-void TaskBase::SetDescription(std::string& description) {
-    description_ = description;
+void TaskBase::SetDescription(std::string description) {
+    description_ = std::move(description);
 }
 
 void TaskBase::SetPriority(TaskPriority priority) {
     priority_ = priority;
 }
 
-void TaskBase::SetTags(TagContainer& tags) {
-    tags_ = tags;
+void TaskBase::SetTags(TagContainer tags) {
+    tags_ = std::move(tags);
 }
 
-void TaskBase::SetTags(std::string& tag) {
+void TaskBase::SetTags(std::string tag) {
     tags_.clear();
-    tags_.insert(tag);
+    tags_.insert(std::move(tag));
 }
