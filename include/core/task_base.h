@@ -14,6 +14,8 @@ public:
 
   TaskBase(int32_t id, std::string title, std::string description,
            TaskPriority priority, TagContainer tags);
+  
+  virtual ~TaskBase() = default;
 
   virtual std::string GetTypeName() const = 0;
   virtual TaskState GetState() const = 0;
@@ -25,14 +27,14 @@ public:
   TaskPriority GetPriority() const noexcept;
   const TagContainer& GetTags() const noexcept;
 
-  bool HasTag(std::string& tag) const;
-  void AddTag(std::string& tag);
-  void RemoveTag(std::string& tag);
+  bool HasTag(const std::string& tag) const;
+  void AddTag(const std::string& tag);
+  void RemoveTag(const std::string& tag);
 
 protected:
   void SetTitle(std::string& title);
   void SetDescription(std::string& description);
-  void SetPriority(TaskPriority& priority);
+  void SetPriority(TaskPriority priority);
   void SetTags(TagContainer& tags);
   void SetTags(std::string& tag);
 
