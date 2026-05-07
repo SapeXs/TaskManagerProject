@@ -4,13 +4,14 @@
 BoundedRecurringTask::BoundedRecurringTask(int32_t id, std::string title, std::string description,
                        TaskPriority priority, TagContainer tags,
                        int64_t seconds_left, int64_t repeat_interval_seconds,
-                       int32_t repeats_left) : RecurringTask(id, title, description, priority, tags, seconds_left, repeat_interval_seconds), repeats_left_(repeats_left) {}
+                       int32_t repeats_left) : RecurringTask(id, std::move(title), std::move(description), priority,
+              std::move(tags), seconds_left, repeat_interval_seconds), repeats_left_(repeats_left) {}
 
 std::string BoundedRecurringTask::GetTypeName() const {
     return kNameBoundedRecurringTask;
 }
 
-int32_t BoundedRecurringTask::GetRepeatsLeft() const {
+int32_t BoundedRecurringTask::GetRepeatsLeft() const noexcept {
     return repeats_left_;
 }
 
@@ -22,10 +23,10 @@ void BoundedRecurringTask::ReduceRepeatsLeft() {
     --repeats_left_;
 }
 
-bool BoundedRecurringTask::CanRepeat() const {
+bool BoundedRecurringTask::CanRepeat() const noexcept {
     return repeats_left_ > 0;
 }
 
-void BoundedRecurringTask::CompleteOccurrence() {
+void BoundedRecurringTask::CompleteOccurrence() noexcept {
     repeats_left_ = 0;
 }
