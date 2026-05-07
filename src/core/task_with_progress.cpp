@@ -22,6 +22,6 @@ std::string TaskWithProgress<ProgressType>::GetProgressString() const {
 }
 
 template <ProgressLike ProgressType>
-ProgressType& TaskWithProgress<ProgressType>::GetProgress() {
+ProgressType &TaskWithProgress<ProgressType>::GetProgress() {
   return progress_;
 }

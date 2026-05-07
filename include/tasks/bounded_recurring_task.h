@@ -6,7 +6,7 @@
 #include "tasks/recurring_task.h"
 
 class BoundedRecurringTask : public RecurringTask {
- public:
+public:
   BoundedRecurringTask(int32_t id, std::string title, std::string description,
                        TaskPriority priority, TagContainer tags,
                        int64_t seconds_left, int64_t repeat_interval_seconds,
@@ -20,6 +20,6 @@ class BoundedRecurringTask : public RecurringTask {
   bool CanRepeat() const noexcept;
   void CompleteOccurrence() noexcept;
 
- private:
+private:
   int32_t repeats_left_;
 };

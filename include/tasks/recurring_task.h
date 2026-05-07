@@ -8,12 +8,12 @@
 #include "progress/time_left_progress.h"
 
 class RecurringTask : public TaskWithProgress<TimeLeftProgress> {
- public:
+public:
   using TagContainer = TaskBase::TagContainer;
 
   RecurringTask(int32_t id, std::string title, std::string description,
-                TaskPriority priority, TagContainer tags,
-                int64_t seconds_left, int64_t repeat_interval_seconds);
+                TaskPriority priority, TagContainer tags, int64_t seconds_left,
+                int64_t repeat_interval_seconds);
 
   std::string GetTypeName() const override;
 
@@ -21,6 +21,6 @@ class RecurringTask : public TaskWithProgress<TimeLeftProgress> {
   void SetSecondsLeft(int64_t seconds_left) noexcept;
   void ResetToNextOccurrence() noexcept;
 
- private:
+private:
   int64_t repeat_interval_seconds_;
 };

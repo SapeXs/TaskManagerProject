@@ -8,7 +8,7 @@
 #include "progress/percentage_progress.h"
 
 class SavingsTask : public TaskWithProgress<PercentageProgress> {
- public:
+public:
   using TagContainer = TaskBase::TagContainer;
 
   SavingsTask(int32_t id, std::string title, std::string description,

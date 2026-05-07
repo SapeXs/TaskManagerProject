@@ -6,27 +6,24 @@
 #include "core/task_state.h"
 
 namespace {
-  constexpr int64_t kSecondsInMinute = 60;
-  constexpr int64_t kMinutesInHour = 60;
-  constexpr int64_t kHoursInDay = 24;
-  constexpr int64_t kZero = 0;
+constexpr int64_t kSecondsInMinute = 60;
+constexpr int64_t kMinutesInHour = 60;
+constexpr int64_t kHoursInDay = 24;
+constexpr int64_t kZero = 0;
 
-  constexpr std::string kEventPassed = "event passed";
-  constexpr std::string kSecondsLeft = " sec left";
-  constexpr std::string kMinutesLeft = " min left";
-  constexpr std::string kHoursLeft = " hours left";
-  constexpr std::string kDaysLeft = " days left";
-}
+constexpr std::string kEventPassed = "event passed";
+constexpr std::string kSecondsLeft = " sec left";
+constexpr std::string kMinutesLeft = " min left";
+constexpr std::string kHoursLeft = " hours left";
+constexpr std::string kDaysLeft = " days left";
+} // namespace
 
 class TimeLeftProgress {
- public:
+public:
   explicit TimeLeftProgress(int64_t seconds_left)
-      : seconds_left_(seconds_left) {
-  }
+      : seconds_left_(seconds_left) {}
 
-  int64_t GetSecondsLeft() const noexcept {
-    return seconds_left_;
-  }
+  int64_t GetSecondsLeft() const noexcept { return seconds_left_; }
 
   void SetSecondsLeft(int64_t seconds_left) noexcept {
     seconds_left_ = seconds_left;
@@ -62,6 +59,6 @@ class TimeLeftProgress {
     return TaskState::kScheduled;
   }
 
- private:
+private:
   int64_t seconds_left_;
 };

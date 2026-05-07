@@ -16,13 +16,14 @@ public:
 
   template <class... ProgressArgs>
   TaskWithProgress(int32_t id, std::string title, std::string description,
-                   TaskPriority priority, TagContainer tags, ProgressArgs&&... progress_args);
+                   TaskPriority priority, TagContainer tags,
+                   ProgressArgs &&...progress_args);
 
   TaskState GetState() const override;
   std::string GetProgressString() const override;
 
 protected:
-  ProgressType& GetProgress();
+  ProgressType &GetProgress();
 
 private:
   ProgressType progress_;

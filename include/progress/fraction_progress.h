@@ -6,23 +6,17 @@
 #include "core/task_state.h"
 
 namespace {
-  constexpr int32_t kMin = 0;
-  constexpr std::string kSignSlash = "/";
-}
+constexpr int32_t kMin = 0;
+constexpr std::string kSignSlash = "/";
+} // namespace
 
 class FractionProgress {
- public:
-  FractionProgress(int32_t done, int32_t total)
-      : done_(done), total_(total) {
-  }
+public:
+  FractionProgress(int32_t done, int32_t total) : done_(done), total_(total) {}
 
-  int32_t GetDone() const noexcept {
-    return done_;
-  }
+  int32_t GetDone() const noexcept { return done_; }
 
-  int32_t GetTotal() const noexcept {
-    return total_;
-  }
+  int32_t GetTotal() const noexcept { return total_; }
 
   void IncrementDone(int32_t value = 1) noexcept {
     done_ += value;
@@ -48,7 +42,7 @@ class FractionProgress {
     return TaskState::kInProgress;
   }
 
- private:
+private:
   int32_t done_;
   int32_t total_;
 };

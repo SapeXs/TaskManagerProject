@@ -8,10 +8,8 @@ ReminderTask::ReminderTask(int32_t id, std::string title,
                                          std::move(description), priority,
                                          std::move(tags), seconds_left) {}
 
-std::string ReminderTask::GetTypeName() const {
-    return kNameReminderTask;
-}
+std::string ReminderTask::GetTypeName() const { return kNameReminderTask; }
 
 void ReminderTask::SetSecondsLeft(int64_t seconds_left) noexcept {
-    GetProgress().SetSecondsLeft(seconds_left);
+  GetProgress().SetSecondsLeft(seconds_left);
 }

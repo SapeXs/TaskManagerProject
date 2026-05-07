@@ -9,21 +9,16 @@ namespace {
 constexpr int32_t kMinPercent = 0;
 constexpr int32_t kMaxPercent = 100;
 constexpr std::string kSignPercent = "%";
-}
+} // namespace
 
 class PercentageProgress {
- public:
+public:
   PercentageProgress(int64_t current_value, int64_t target_value)
-      : current_value_(current_value), target_value_(target_value) {
-  }
+      : current_value_(current_value), target_value_(target_value) {}
 
-  int64_t GetCurrentValue() const noexcept {
-    return current_value_;
-  }
+  int64_t GetCurrentValue() const noexcept { return current_value_; }
 
-  int64_t GetTargetValue() const noexcept {
-    return target_value_;
-  }
+  int64_t GetTargetValue() const noexcept { return target_value_; }
 
   void Add(int64_t value) noexcept {
     current_value_ += value;
@@ -57,7 +52,7 @@ class PercentageProgress {
     return TaskState::kInProgress;
   }
 
- private:
+private:
   int64_t current_value_;
   int64_t target_value_;
 };
