@@ -7,8 +7,8 @@ RecurringTask::RecurringTask(int32_t id, std::string title,
                              int64_t repeat_interval_seconds)
     : TaskWithProgress<TimeLeftProgress>(
           id, std::move(title), std::move(description), priority,
-          std::move(tags)),
-      repeat_interval_seconds_(repeat_interval_seconds) {GetProgress().SetSecondsLeft(seconds_left);}
+          std::move(tags), seconds_left),
+      repeat_interval_seconds_(repeat_interval_seconds) {}
 
 std::string RecurringTask::GetTypeName() const {
     return kNameRecurringTask;
