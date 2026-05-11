@@ -25,6 +25,6 @@ public:
 protected:
   ProgressType &GetProgress();
 
-private:
+ private:
   ProgressType progress_;
 };

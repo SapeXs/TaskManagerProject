@@ -25,9 +25,8 @@ public:
 
   int64_t GetSecondsLeft() const noexcept { return seconds_left_; }
 
-  void SetSecondsLeft(int64_t seconds_left) noexcept {
-    seconds_left_ = seconds_left;
-  }
+  int64_t GetSecondsLeft() const noexcept { return seconds_left_; }
+  void SetSecondsLeft(int64_t seconds_left) noexcept { seconds_left_ = seconds_left; }
 
   std::string ToString() const {
     if (seconds_left_ < kZero) {

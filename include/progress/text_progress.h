@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <utility>
 
 #include "core/task_state.h"
 
@@ -9,7 +10,7 @@ public:
   TextProgress(std::string text, TaskState state)
       : text_(std::move(text)), state_(state) {}
 
-  const std::string &GetText() const noexcept { return text_; }
+  const std::string& GetText() const noexcept { return text_; }
 
   void Set(std::string text, TaskState state) {
     text_ = std::move(text);
