@@ -39,3 +39,7 @@
 
 # debug information files
 *.dwo
+
+# папка и файн с параметрами запуска
+.vscode
+c_cpp_properties.json
