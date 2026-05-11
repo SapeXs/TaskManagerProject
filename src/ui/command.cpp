@@ -1,17 +1,16 @@
-#pragma once
+#include "ui/command.h"
 
-#include <string>
-#include <vector>
-#include "ui/command_type.h"
+Command::Command(CommandType type, std::vector<std::string> args)
+    : type_(type), args_(std::move(args)) {}
 
-class Command {
- public:
-  Command(CommandType type, std::vector<std::string> args = {});
-  CommandType GetType() const noexcept;
-  const std::vector<std::string>& GetArgs() const noexcept;
-  bool IsValid() const noexcept;
+CommandType Command::GetType() const noexcept {
+  return type_;
+}
 
- private:
-  CommandType type_;
-  std::vector<std::string> args_;
-};
+std::span<const std::string> Command::GetArgs() const noexcept {
+  return args_;
+}
+
+bool Command::IsValid() const noexcept {
+  return type_ != CommandType::kInvalid;
+}
