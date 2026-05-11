@@ -1,8 +1,8 @@
 #pragma once
 
 enum class TaskPriority {
-  kLow,
-  kMedium,
-  kHigh,
-  kCritical,
+  kLowPriority,
+  kMediumPriority,
+  kHighPriority,
+  kCriticalPriority,
 };
