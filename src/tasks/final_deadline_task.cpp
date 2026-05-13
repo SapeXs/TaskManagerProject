@@ -1,24 +1,28 @@
 #include "tasks/final_deadline_task.h"
+#include "core/task_name.h"
 
-FinalDeadlineTask::FinalDeadlineTask(int32_t id, std::string title, std::string description,
-                                     TaskPriority priority, TagContainer tags,
-                                     int64_t deadline_timestamp)
-    : DeadlineTask(id, std::move(title), std::move(description), priority, std::move(tags),
-                   deadline_timestamp) {}
+FinalDeadlineTask::FinalDeadlineTask(int32_t id, std::string title, 
+    std::string description, TaskPriority priority,
+    TagContainer tags, std::vector<std::string> step_texts,
+    std::string final_deadline_text, std::size_t current_step)
+    : SteppedDeadlineTask(
+          id,
+          std::move(title),
+          std::move(description),
+          priority,
+          std::move(tags),
+          std::move(step_texts),
+          current_step),
+      final_deadline_text_(std::move(final_deadline_text)) {}
 
-std::string FinalDeadlineTask::GetTypeName() const {
-    return "FinalDeadlineTask";
+std::string_view FinalDeadlineTask::GetTypeName() const {
+    return kNameFinalDeadlineTask;
 }
 
-int64_t FinalDeadlineTask::GetDeadlineTimestamp() const noexcept {
-    return deadline_timestamp_;
+const std::string& FinalDeadlineTask::GetFinalDeadlineText() const noexcept {
+  return final_deadline_text_;
 }
 
-void FinalDeadlineTask::SetDeadlineTimestamp(int64_t timestamp) {
-    deadline_timestamp_ = timestamp;
-}
-
-bool FinalDeadlineTask::IsExpired() const noexcept {
-    //хз как тут время делать 
-    return false;
+void FinalDeadlineTask::MarkFinalDeadlinePassed() {
+  SetOverdue();
 }
