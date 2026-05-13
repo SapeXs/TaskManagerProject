@@ -23,7 +23,9 @@ public:
   std::string GetProgressString() const override;
 
 protected:
-  ProgressType &GetProgress();
+  ProgressType& GetProgress();
+
+  const ProgressType& GetProgress() const;
 
  private:
   ProgressType progress_;
