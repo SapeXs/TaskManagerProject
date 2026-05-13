@@ -9,7 +9,7 @@ BoundedRecurringTask::BoundedRecurringTask(
                     std::move(tags), seconds_left, repeat_interval_seconds),
       repeats_left_(repeats_left) {}
 
-std::string BoundedRecurringTask::GetTypeName() const {
+std::string_view BoundedRecurringTask::GetTypeName() const {
   return kNameBoundedRecurringTask;
 }
 
