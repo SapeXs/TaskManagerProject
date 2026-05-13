@@ -17,7 +17,7 @@ class TaskBase {
 
   virtual ~TaskBase() = default;
 
-  virtual std::string GetTypeName() const = 0;
+  virtual std::string_view GetTypeName() const = 0;
   virtual TaskState GetState() const = 0;
   virtual std::string GetProgressString() const = 0;
 
