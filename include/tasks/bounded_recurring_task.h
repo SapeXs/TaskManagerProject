@@ -12,7 +12,7 @@ public:
                        int64_t seconds_left, int64_t repeat_interval_seconds,
                        int32_t repeats_left);
 
-  std::string GetTypeName() const;
+  std::string_view GetTypeName() const;
 
   int32_t GetRepeatsLeft() const noexcept;
   void SetRepeatsLeft(int32_t repeats);

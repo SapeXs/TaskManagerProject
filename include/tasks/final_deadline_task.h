@@ -14,9 +14,9 @@ public:
                     std::string final_deadline_text,
                     std::size_t current_step = 0);
 
-  std::string GetTypeName() const override;
+  std::string_view GetTypeName() const override;
 
-  const std::string &GetFinalDeadlineText() const noexcept;
+  const std::string& GetFinalDeadlineText() const noexcept;
   void MarkFinalDeadlinePassed();
 
 private:

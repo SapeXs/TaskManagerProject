@@ -14,7 +14,7 @@ public:
   ReminderTask(int32_t id, std::string title, std::string description,
                TaskPriority priority, TagContainer tags, int64_t seconds_left);
 
-  std::string GetTypeName() const;
+  std::string_view GetTypeName() const;
 
   void SetSecondsLeft(int64_t seconds_left) noexcept;
 };

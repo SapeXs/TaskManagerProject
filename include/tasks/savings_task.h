@@ -15,7 +15,7 @@ public:
               TaskPriority priority, TagContainer tags, int64_t current_value,
               int64_t target_value);
 
-  std::string GetTypeName() const override;
+  std::string_view GetTypeName() const override;
 
   int64_t GetCurrentValue() const noexcept;
   int64_t GetTargetValue() const noexcept;

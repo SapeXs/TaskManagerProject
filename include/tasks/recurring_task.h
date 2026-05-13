@@ -15,7 +15,7 @@ public:
                 TaskPriority priority, TagContainer tags, int64_t seconds_left,
                 int64_t repeat_interval_seconds);
 
-  std::string GetTypeName() const override;
+  std::string_view GetTypeName() const override;
 
   int64_t GetRepeatIntervalSeconds() const noexcept;
   void SetSecondsLeft(int64_t seconds_left) noexcept;
