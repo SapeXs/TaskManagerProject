@@ -9,7 +9,7 @@ namespace {
 constexpr int32_t kMinPercent = 0;
 constexpr int32_t kMaxPercent = 100;
 constexpr std::string kSignPercent = "%";
-} // namespace
+}
 
 class PercentageProgress {
 public:
