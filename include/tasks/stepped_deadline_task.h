@@ -1,9 +1,6 @@
 #pragma once
 
-#include <chrono>
-#include <cstdint>
-#include <ctime>
-#include <iomanip>
+#include <cstddef>
 #include <string>
 #include <vector>
 
@@ -21,9 +18,9 @@ public:
                       std::vector<std::string> step_texts,
                       std::size_t current_step = 0);
 
-  std::string GetTypeName() const override;
+  std::string_view GetTypeName() const override;
 
-  const std::vector<std::string> &GetStepTexts() const noexcept;
+  const std::vector<std::string>& GetStepTexts() const noexcept;
   std::size_t GetCurrentStep() const noexcept;
 
   void AdvanceStep();
@@ -34,5 +31,5 @@ protected:
 
 private:
   std::vector<std::string> step_texts_;
-  std::size_t current_step_;
+  std::size_t current_step_ = 0;
 };
