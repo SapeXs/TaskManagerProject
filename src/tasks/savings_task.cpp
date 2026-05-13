@@ -7,7 +7,7 @@ SavingsTask::SavingsTask(int32_t id, std::string title, std::string description,
                                            priority, std::move(tags),
                                            current_value, target_value) {}
 
-std::string SavingsTask::GetTypeName() const {
+std::string_view SavingsTask::GetTypeName() const {
     return "SavingsTask";
 }
 
@@ -20,5 +20,5 @@ int64_t SavingsTask::GetTargetValue() const noexcept {
 }
 
 void SavingsTask::AddValue(int64_t value) noexcept {
-    GetProgress().AddValue(value);
+    GetProgress().Add(value);
 }
