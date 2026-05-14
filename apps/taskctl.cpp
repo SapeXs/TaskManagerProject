@@ -9,10 +9,9 @@ int main(int argc, char** argv) {
 
   UnixSocketClient client("/tmp/taskmanager.sock");
 
-  if (!client.SendMessage(argv[1])) {
-    std::cerr << "Failed to send message\n";
-    return 1;
-  }
+  std::string response = client.SendRequest(argv[1]);
+
+  std::cout << response << '\n';
 
   return 0;
 }

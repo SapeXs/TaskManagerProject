@@ -1,4 +1,6 @@
 #include "app/daemon_app.h"
+#include "ui/command_parser.h"
+#include "tasks/reminder_task.h"
 
 #include <chrono>
 #include <iostream>
@@ -9,6 +11,8 @@ DaemonApp::DaemonApp(std::chrono::seconds autosave_interval, std::filesystem::pa
       storage_("tasks.txt"), socket_server_(socket_server) {}
 
 void DaemonApp::Run() {
+  CommandParser parser;
+
   if (!socket_server_.Start()) {
     std::cerr << "Failed to start socket server\n";
     return;
@@ -30,8 +34,9 @@ void DaemonApp::Run() {
   std::cout << "TaskManager daemon started\n";
 
   while (running_) {
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-    std::string_view message = socket_server_.WaitMessage();
+    std::string message = socket_server_.WaitMessage();
+
+    socket_server_.SendResponse("Message received");
 
     if (!message.empty()) {
       std::cout << "Received: " << message << '\n';
@@ -51,6 +56,8 @@ void DaemonApp::Run() {
 
 void DaemonApp::Stop() {
   running_ = false;
+
+  socket_server_.Shutdown();
 }
 
 void DaemonApp::AutosaveLoop(std::stop_token stop_token) {
