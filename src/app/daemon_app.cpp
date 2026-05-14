@@ -4,11 +4,16 @@
 #include <iostream>
 #include <thread>
 
-DaemonApp::DaemonApp(std::chrono::seconds autosave_interval)
+DaemonApp::DaemonApp(std::chrono::seconds autosave_interval, std::filesystem::path socket_server)
     : autosave_interval_(autosave_interval),
-      storage_("tasks.txt") {}
+      storage_("tasks.txt"), socket_server_(socket_server) {}
 
 void DaemonApp::Run() {
+  if (!socket_server_.Start()) {
+    std::cerr << "Failed to start socket server\n";
+    return;
+  }
+
   running_ = true;
 
   {
@@ -26,6 +31,11 @@ void DaemonApp::Run() {
 
   while (running_) {
     std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::string_view message = socket_server_.WaitMessage();
+
+    if (!message.empty()) {
+      std::cout << "Received: " << message << '\n';
+    }
   }
 
   autosave_thread_.request_stop();
