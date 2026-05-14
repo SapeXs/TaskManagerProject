@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "ui/command.h"
 
 Command::Command(CommandType type, std::vector<std::string> args)
