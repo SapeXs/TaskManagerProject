@@ -1,7 +1,7 @@
 #include "ui/command_type.h"
 #include <string>
 
-std::string ToString(CommandType type) {
+std::string_view ToString(CommandType type) {
     switch (type) {
         case CommandType::kAdd:      return "add";
         case CommandType::kList:     return "list";
