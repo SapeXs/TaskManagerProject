@@ -16,7 +16,7 @@ void HandleSignal(int signal) {
 }
 
 int main() {
-  DaemonApp app(std::chrono::seconds(10));
+  DaemonApp app(std::chrono::seconds(10), "/tmp/taskmanager.sock");
 
   g_app = &app;
 
