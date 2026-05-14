@@ -13,7 +13,7 @@ const std::unordered_map<std::string, CommandType> kCommandMap = {
     {"help",   CommandType::kHelp},
     {"exit",   CommandType::kExit}
 };
-}  // namespace
+}
 
 std::vector<std::string> CommandParser::Split_(const std::string& input) const {
   std::vector<std::string> tokens;
@@ -39,8 +39,11 @@ Command CommandParser::Parse(const std::string& input) const {
     return Command(CommandType::kInvalid, {});
   }
   
-  return Command(
-      ParseCommandType_(tokens[0]),
-      std::vector<std::string>(tokens.begin() + 1, tokens.end())
-  );
+  std::vector<std::string> args;
+
+  if (tokens.size() > 1) {
+    args.assign(std::next(tokens.begin()), tokens.end());
+  }
+
+  return Command(ParseCommandType_(tokens[0]), std::move(args));
 }
