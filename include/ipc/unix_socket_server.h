@@ -13,6 +13,10 @@ public:
     bool Start();
 
     std::string WaitMessage();
+
+    bool SendResponse(const std::string& response);
+
+    void Shutdown();
 private:
     std::filesystem::path socket_path_;
 
