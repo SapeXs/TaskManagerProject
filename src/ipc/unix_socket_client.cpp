@@ -6,39 +6,44 @@
 
 #include <cstring>
 
-UnixSocketClient::UnixSocketClient(
-    std::filesystem::path socket_path)
+UnixSocketClient::UnixSocketClient(std::filesystem::path socket_path)
     : socket_path_(std::move(socket_path)) {}
 
-bool UnixSocketClient::SendMessage(
-    const std::string& message) {
-  int socket_fd =
-      socket(AF_UNIX, SOCK_STREAM, 0);
+std::string UnixSocketClient::SendRequest(const std::string& request) {
+  int socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
 
   if (socket_fd < 0) {
-    return false;
+    return {};
   }
 
   sockaddr_un address{};
   address.sun_family = AF_UNIX;
 
   std::strncpy(
-      address.sun_path,
-      socket_path_.c_str(),
-      sizeof(address.sun_path) - 1);
+    address.sun_path,
+    socket_path_.c_str(),
+    sizeof(address.sun_path) - 1
+  );
 
-  if (connect(socket_fd,
-              reinterpret_cast<sockaddr*>(&address),
-              sizeof(address)) < 0) {
+  if (connect(socket_fd, reinterpret_cast<sockaddr*>(&address), sizeof(address)) < 0) {
     close(socket_fd);
-    return false;
+    return {};
   }
 
-  write(socket_fd,
-        message.c_str(),
-        message.size());
+  write(socket_fd, request.c_str(), request.size());
+
+  char buffer[4096]{};
+
+  ssize_t bytes = read(socket_fd,
+           buffer,
+           sizeof(buffer)
+          );
 
   close(socket_fd);
 
-  return true;
+  if (bytes <= 0) {
+    return {};
+  }
+
+  return std::string(buffer, bytes);
 }
