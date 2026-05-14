@@ -62,12 +62,34 @@ std::string UnixSocketServer::WaitMessage() {
 
   char buffer[1024]{};
 
-  ssize_t bytes =
-      read(client_fd_, buffer, sizeof(buffer));
+  ssize_t bytes = read(client_fd_, buffer, sizeof(buffer));
 
   if (bytes <= 0) {
     return {};
   }
 
   return std::string(buffer, bytes);
+}
+
+bool UnixSocketServer::SendResponse(const std::string& response) {
+  if (client_fd_ < 0) {
+    return false;
+  }
+
+  ssize_t bytes = write(
+    client_fd_,
+    response.c_str(),
+    response.size()
+  );
+
+  return bytes >= 0;
+}
+
+void UnixSocketServer::Shutdown() {
+  if (server_fd_ != -1) {
+    close(server_fd_);
+    server_fd_ = -1;
+  }
+
+  unlink(socket_path_.c_str());
 }
