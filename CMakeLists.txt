@@ -26,6 +26,18 @@ target_include_directories(task_manager_core PUBLIC include)
 add_executable(taskmanagerd
     apps/taskmanagerd.cpp
     src/app/daemon_app.cpp
+    src/ipc/unix_socket_server.cpp
 )
 
+target_include_directories(taskmanagerd PRIVATE include)
+
 target_link_libraries(taskmanagerd PRIVATE task_manager_core)
+
+add_executable(taskctl
+    apps/taskctl.cpp
+    src/ipc/unix_socket_client.cpp
+)
+
+target_include_directories(taskctl PRIVATE include)
+
+target_link_libraries(taskctl PRIVATE task_manager_core)
