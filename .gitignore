@@ -43,3 +43,8 @@
 # папка и файн с параметрами запуска
 .vscode
 c_cpp_properties.json
+
+build
+review_full.txt
+
+.gitignore
