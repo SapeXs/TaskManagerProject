@@ -19,6 +19,10 @@ add_library(task_manager_core
     src/tasks/final_deadline_task.cpp
 
     src/storage/task_storage.cpp
+
+    src/ui/command.cpp
+    src/ui/command_parser.cpp
+    src/ui/command_type.cpp
 )
 
 target_include_directories(task_manager_core PUBLIC include)
