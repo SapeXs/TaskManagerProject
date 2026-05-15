@@ -8,5 +8,6 @@ enum class CommandType {
   kFilter,
   kHelp,
   kExit,
+  kSave,
   kInvalid,
 };
