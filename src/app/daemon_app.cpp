@@ -36,7 +36,66 @@ void DaemonApp::Run() {
   while (running_) {
     std::string message = socket_server_.WaitMessage();
 
-    socket_server_.SendResponse("Message received");
+    if (message.empty()) {
+      continue;
+    }
+
+    Command command = parser.Parse(message);
+
+    switch (command.GetType()) {
+      case CommandType::kAdd: {
+        if (command.GetArgs().empty()) {
+          socket_server_.SendResponse("Missing title");
+          break;
+        }
+
+        static int32_t next_id = 1;
+
+        auto task = std::make_unique<ReminderTask>(
+            next_id++,
+            command.GetArgs()[0],
+            "",
+            TaskPriority::kMediumPriority,
+            TaskBase::TagContainer{},
+            0);
+
+        {
+          std::lock_guard lock(task_mutex_);
+          task_manager_.AddTask(std::move(task));
+        }
+
+        socket_server_.SendResponse("Task added");
+        break;
+      }
+
+      case CommandType::kList: {
+        std::string response;
+
+        {
+          std::lock_guard lock(task_mutex_);
+
+          auto tasks = task_manager_.GetAllTasks();
+
+          for (const TaskBase* task : tasks) {
+            response += std::to_string(task->GetId());
+            response += " | ";
+            response += task->GetTitle();
+            response += '\n';
+          }
+        }
+
+        if (response.empty()) {
+          response = "No tasks";
+        }
+
+        socket_server_.SendResponse(response);
+        break;
+      }
+
+      default:
+        socket_server_.SendResponse("Unknown command");
+        break;
+    }
 
     if (!message.empty()) {
       std::cout << "Received: " << message << '\n';
