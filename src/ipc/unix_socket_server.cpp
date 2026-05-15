@@ -12,15 +12,7 @@ UnixSocketServer::UnixSocketServer(
     : socket_path_(std::move(socket_path)) {}
 
 UnixSocketServer::~UnixSocketServer() {
-  if (client_fd_ != -1) {
-    close(client_fd_);
-  }
-
-  if (server_fd_ != -1) {
-    close(server_fd_);
-  }
-
-  unlink(socket_path_.c_str());
+  Shutdown();
 }
 
 bool UnixSocketServer::Start() {
@@ -60,11 +52,12 @@ std::string UnixSocketServer::WaitMessage() {
     return {};
   }
 
-  char buffer[1024]{};
-
+  char buffer[4096]{};
   ssize_t bytes = read(client_fd_, buffer, sizeof(buffer));
 
   if (bytes <= 0) {
+    close(client_fd_);
+    client_fd_ = -1;
     return {};
   }
 
@@ -82,10 +75,18 @@ bool UnixSocketServer::SendResponse(const std::string& response) {
     response.size()
   );
 
+  close(client_fd_);
+  client_fd_ = -1;
+
   return bytes >= 0;
 }
 
 void UnixSocketServer::Shutdown() {
+  if (client_fd_ != -1) {
+      close(client_fd_);
+      client_fd_ = -1;
+  }
+
   if (server_fd_ != -1) {
     close(server_fd_);
     server_fd_ = -1;
