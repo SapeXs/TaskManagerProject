@@ -9,16 +9,14 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(task_manager_core
     src/core/task_base.cpp
     src/manager/task_manager.cpp
+    src/storage/task_storage.cpp
 
     src/tasks/recurring_task.cpp
     src/tasks/bounded_recurring_task.cpp
     src/tasks/reminder_task.cpp
-
     src/tasks/savings_task.cpp
     src/tasks/stepped_deadline_task.cpp
     src/tasks/final_deadline_task.cpp
-
-    src/storage/task_storage.cpp
 
     src/ui/command.cpp
     src/ui/command_parser.cpp
@@ -30,6 +28,7 @@ target_include_directories(task_manager_core PUBLIC include)
 add_executable(taskmanagerd
     apps/taskmanagerd.cpp
     src/app/daemon_app.cpp
+    src/app/command_handler.cpp
     src/ipc/unix_socket_server.cpp
 )
 
