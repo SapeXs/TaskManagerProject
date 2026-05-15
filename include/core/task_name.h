@@ -2,7 +2,7 @@
 
 #include <string_view>
 
-namespace {
+namespace task_names {
 inline constexpr std::string_view kNameBoundedRecurringTask =
     "Bounded Recurring Task";
 inline constexpr std::string_view kNameFinalDeadlineTask =

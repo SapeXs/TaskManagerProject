@@ -10,7 +10,7 @@ BoundedRecurringTask::BoundedRecurringTask(
       repeats_left_(repeats_left) {}
 
 std::string_view BoundedRecurringTask::GetTypeName() const {
-  return kNameBoundedRecurringTask;
+  return task_names::kNameBoundedRecurringTask;
 }
 
 int32_t BoundedRecurringTask::GetRepeatsLeft() const noexcept {

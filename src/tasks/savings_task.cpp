@@ -9,7 +9,7 @@ SavingsTask::SavingsTask(int32_t id, std::string title, std::string description,
                                            current_value, target_value) {}
 
 std::string_view SavingsTask::GetTypeName() const {
-  return kNameSavingTask;
+  return task_names::kNameSavingTask;
 }
 int64_t SavingsTask::GetCurrentValue() const noexcept {
     return GetProgress().GetCurrentValue();

@@ -18,30 +18,30 @@ std::unique_ptr<TaskBase> CreateTaskFromStorageFields(const std::vector<std::str
   TaskPriority priority = ParseTaskPriority(fields[4]);
   TaskBase::TagContainer tags = ParseStorageTags(fields[5]);
 
-  if (type == kNameReminderTask && fields.size() == 7) {
+  if (type == task_names::kNameReminderTask && fields.size() == 7) {
     return std::make_unique<ReminderTask>(id, std::move(title), std::move(description), priority, std::move(tags), std::stoll(fields[6]));
   }
 
-  if (type == kNameRecurringTask && fields.size() == 8) {
+  if (type == task_names::kNameRecurringTask && fields.size() == 8) {
     return std::make_unique<RecurringTask>(id, std::move(title), std::move(description), priority, std::move(tags), std::stoll(fields[6]), std::stoll(fields[7]));
   }
 
-  if (type == kNameBoundedRecurringTask && fields.size() == 9) {
+  if (type == task_names::kNameBoundedRecurringTask && fields.size() == 9) {
     return std::make_unique<BoundedRecurringTask>(id, std::move(title), std::move(description), priority, std::move(tags), std::stoll(fields[6]), std::stoll(fields[7]), std::stoi(fields[8]));
   }
 
-  if (type == kNameSavingTask && fields.size() == 8) {
+  if (type == task_names::kNameSavingTask && fields.size() == 8) {
     return std::make_unique<SavingsTask>(id, std::move(title), std::move(description), priority, std::move(tags), std::stoll(fields[6]), std::stoll(fields[7]));
   }
 
-  if (type == kNameSteppedDeadlineTask && fields.size() >= 8) {
+  if (type == task_names::kNameSteppedDeadlineTask && fields.size() >= 8) {
     std::size_t current_step = static_cast<std::size_t>(std::stoull(fields[6]));
     std::vector<std::string> steps(fields.begin() + 7, fields.end());
 
     return std::make_unique<SteppedDeadlineTask>(id, std::move(title), std::move(description), priority, std::move(tags), std::move(steps), current_step);
   }
 
-  if (type == kNameFinalDeadlineTask && fields.size() >= 9) {
+  if (type == task_names::kNameFinalDeadlineTask && fields.size() >= 9) {
     std::size_t current_step = static_cast<std::size_t>(std::stoull(fields[6]));
     std::vector<std::string> steps(fields.begin() + 7, fields.end() - 1);
     std::string final_deadline_text = fields.back();

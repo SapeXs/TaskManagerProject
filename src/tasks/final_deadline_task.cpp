@@ -16,7 +16,7 @@ FinalDeadlineTask::FinalDeadlineTask(int32_t id, std::string title,
       final_deadline_text_(std::move(final_deadline_text)) {}
 
 std::string_view FinalDeadlineTask::GetTypeName() const {
-    return kNameFinalDeadlineTask;
+    return task_names::kNameFinalDeadlineTask;
 }
 
 const std::string& FinalDeadlineTask::GetFinalDeadlineText() const noexcept {

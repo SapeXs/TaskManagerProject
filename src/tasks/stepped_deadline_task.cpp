@@ -15,7 +15,7 @@ SteppedDeadlineTask::SteppedDeadlineTask(int32_t id, std::string title, std::str
           step_texts_(std::move(step_texts)), current_step_(current_step) {}
 
 std::string_view SteppedDeadlineTask::GetTypeName() const {
-    return kNameSteppedDeadlineTask;
+    return task_names::kNameSteppedDeadlineTask;
 }
 
 const std::vector<std::string>& SteppedDeadlineTask::GetStepTexts() const noexcept {

@@ -10,7 +10,7 @@ RecurringTask::RecurringTask(int32_t id, std::string title,
                                          std::move(tags), seconds_left),
       repeat_interval_seconds_(repeat_interval_seconds) {}
 
-std::string_view RecurringTask::GetTypeName() const { return kNameRecurringTask; }
+std::string_view RecurringTask::GetTypeName() const { return task_names::kNameRecurringTask; }
 
 int64_t RecurringTask::GetSecondsLeft() const noexcept {
   return GetProgress().GetSecondsLeft();
