@@ -28,3 +28,8 @@ bool BoundedRecurringTask::CanRepeat() const noexcept {
 }
 
 void BoundedRecurringTask::CompleteOccurrence() noexcept { repeats_left_ = 0; }
+
+std::vector<std::string> BoundedRecurringTask::GetStorageFields() const {
+  return {std::to_string(GetSecondsLeft()), std::to_string(GetRepeatIntervalSeconds()),
+          std::to_string(GetRepeatsLeft())};
+}

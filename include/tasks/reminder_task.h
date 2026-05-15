@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #include "core/task_priority.h"
 #include "core/task_with_progress.h"
@@ -16,5 +17,8 @@ public:
 
   std::string_view GetTypeName() const;
 
+  int64_t GetSecondsLeft() const noexcept;
   void SetSecondsLeft(int64_t seconds_left) noexcept;
+
+  std::vector<std::string> GetStorageFields() const override;
 };

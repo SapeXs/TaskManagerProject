@@ -51,3 +51,14 @@ void SteppedDeadlineTask::UpdateProgressText(
 
   GetProgress().Set(std::move(text), state);
 }
+
+std::vector<std::string> SteppedDeadlineTask::GetStorageFields() const {
+  std::vector<std::string> fields;
+  fields.push_back(std::to_string(GetCurrentStep()));
+
+  for (const std::string& step : GetStepTexts()) {
+    fields.push_back(step);
+  }
+
+  return fields;
+}

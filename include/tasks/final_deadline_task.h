@@ -19,6 +19,8 @@ public:
   const std::string& GetFinalDeadlineText() const noexcept;
   void MarkFinalDeadlinePassed();
 
+  std::vector<std::string> GetStorageFields() const override;
+
 private:
   std::string final_deadline_text_;
 };

@@ -20,6 +20,8 @@ public:
   bool CanRepeat() const noexcept;
   void CompleteOccurrence() noexcept;
 
+  std::vector<std::string> GetStorageFields() const override;
+
 private:
   int32_t repeats_left_;
 };

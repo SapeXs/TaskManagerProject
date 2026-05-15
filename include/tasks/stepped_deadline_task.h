@@ -26,6 +26,8 @@ public:
   void AdvanceStep();
   void SetOverdue();
 
+  std::vector<std::string> GetStorageFields() const override;
+
 protected:
   void UpdateProgressText(TaskState state);
 

@@ -12,6 +12,10 @@ RecurringTask::RecurringTask(int32_t id, std::string title,
 
 std::string_view RecurringTask::GetTypeName() const { return kNameRecurringTask; }
 
+int64_t RecurringTask::GetSecondsLeft() const noexcept {
+  return GetProgress().GetSecondsLeft();
+}
+
 int64_t RecurringTask::GetRepeatIntervalSeconds() const noexcept {
   return repeat_interval_seconds_;
 }
@@ -22,4 +26,8 @@ void RecurringTask::SetSecondsLeft(int64_t seconds_left) noexcept {
 
 void RecurringTask::ResetToNextOccurrence() noexcept {
   GetProgress().SetSecondsLeft(repeat_interval_seconds_);
+}
+
+std::vector<std::string> RecurringTask::GetStorageFields() const {
+  return {std::to_string(GetSecondsLeft()), std::to_string(GetRepeatIntervalSeconds())};
 }

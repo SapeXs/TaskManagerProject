@@ -17,9 +17,12 @@ public:
 
   std::string_view GetTypeName() const override;
 
+  int64_t GetSecondsLeft() const noexcept;
   int64_t GetRepeatIntervalSeconds() const noexcept;
   void SetSecondsLeft(int64_t seconds_left) noexcept;
   void ResetToNextOccurrence() noexcept;
+  
+  std::vector<std::string> GetStorageFields() const override;
 
 private:
   int64_t repeat_interval_seconds_;

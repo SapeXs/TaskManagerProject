@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <string>
 #include <string_view>
+#include <vector>
 #include <unordered_set>
 
 #include "core/task_priority.h"
@@ -20,6 +21,7 @@ class TaskBase {
   virtual std::string_view GetTypeName() const = 0;
   virtual TaskState GetState() const = 0;
   virtual std::string GetProgressString() const = 0;
+  virtual std::vector<std::string> GetStorageFields() const = 0;
 
   int32_t GetId() const noexcept;
   const std::string& GetTitle() const noexcept;

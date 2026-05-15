@@ -20,5 +20,7 @@ public:
   int64_t GetCurrentValue() const noexcept;
   int64_t GetTargetValue() const noexcept;
 
+  std::vector<std::string> GetStorageFields() const override;
+
   void AddValue(int64_t value) noexcept;
 };

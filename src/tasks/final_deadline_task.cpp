@@ -26,3 +26,9 @@ const std::string& FinalDeadlineTask::GetFinalDeadlineText() const noexcept {
 void FinalDeadlineTask::MarkFinalDeadlinePassed() {
   SetOverdue();
 }
+
+std::vector<std::string> FinalDeadlineTask::GetStorageFields() const {
+  std::vector<std::string> fields = SteppedDeadlineTask::GetStorageFields();
+  fields.push_back(final_deadline_text_);
+  return fields;
+}

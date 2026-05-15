@@ -13,3 +13,11 @@ std::string_view ReminderTask::GetTypeName() const { return kNameReminderTask; }
 void ReminderTask::SetSecondsLeft(int64_t seconds_left) noexcept {
   GetProgress().SetSecondsLeft(seconds_left);
 }
+
+int64_t ReminderTask::GetSecondsLeft() const noexcept {
+  return GetProgress().GetSecondsLeft();
+}
+
+std::vector<std::string> ReminderTask::GetStorageFields() const {
+  return {std::to_string(GetSecondsLeft())};
+}
