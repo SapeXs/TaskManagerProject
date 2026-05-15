@@ -1,16 +1,17 @@
 #include "tasks/recurring_task.h"
+
 #include "core/task_name.h"
 
-RecurringTask::RecurringTask(int32_t id, std::string title,
-                             std::string description, TaskPriority priority,
-                             TagContainer tags, int64_t seconds_left,
+RecurringTask::RecurringTask(int32_t id, std::string title, std::string description,
+                             TaskPriority priority, TagContainer tags, int64_t seconds_left,
                              int64_t repeat_interval_seconds)
-    : TaskWithProgress<TimeLeftProgress>(id, std::move(title),
-                                         std::move(description), priority,
+    : TaskWithProgress<TimeLeftProgress>(id, std::move(title), std::move(description), priority,
                                          std::move(tags), seconds_left),
       repeat_interval_seconds_(repeat_interval_seconds) {}
 
-std::string_view RecurringTask::GetTypeName() const { return task_names::kNameRecurringTask; }
+std::string_view RecurringTask::GetTypeName() const {
+  return task_names::kNameRecurringTask;
+}
 
 int64_t RecurringTask::GetSecondsLeft() const noexcept {
   return GetProgress().GetSecondsLeft();

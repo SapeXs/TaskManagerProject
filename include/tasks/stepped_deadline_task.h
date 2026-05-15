@@ -10,12 +10,11 @@
 #include "progress/text_progress.h"
 
 class SteppedDeadlineTask : public TaskWithProgress<TextProgress> {
-public:
+ public:
   using TagContainer = TaskBase::TagContainer;
 
-  SteppedDeadlineTask(int32_t id, std::string title, std::string description,
-                      TaskPriority priority, TagContainer tags,
-                      std::vector<std::string> step_texts,
+  SteppedDeadlineTask(int32_t id, std::string title, std::string description, TaskPriority priority,
+                      TagContainer tags, std::vector<std::string> step_texts,
                       std::size_t current_step = 0);
 
   std::string_view GetTypeName() const override;
@@ -28,10 +27,10 @@ public:
 
   std::vector<std::string> GetStorageFields() const override;
 
-protected:
+ protected:
   void UpdateProgressText(TaskState state);
 
-private:
+ private:
   std::vector<std::string> step_texts_;
   std::size_t current_step_ = 0;
 };

@@ -7,12 +7,10 @@
 #include "tasks/stepped_deadline_task.h"
 
 class FinalDeadlineTask : public SteppedDeadlineTask {
-public:
-  FinalDeadlineTask(int32_t id, std::string title, std::string description,
-                    TaskPriority priority, TagContainer tags,
-                    std::vector<std::string> step_texts,
-                    std::string final_deadline_text,
-                    std::size_t current_step = 0);
+ public:
+  FinalDeadlineTask(int32_t id, std::string title, std::string description, TaskPriority priority,
+                    TagContainer tags, std::vector<std::string> step_texts,
+                    std::string final_deadline_text, std::size_t current_step = 0);
 
   std::string_view GetTypeName() const override;
 
@@ -21,6 +19,6 @@ public:
 
   std::vector<std::string> GetStorageFields() const override;
 
-private:
+ private:
   std::string final_deadline_text_;
 };

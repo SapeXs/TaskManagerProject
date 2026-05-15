@@ -12,7 +12,7 @@
 #include "core/task_state.h"
 
 class TaskManager {
-public:
+ public:
   using TaskPtr = std::unique_ptr<TaskBase>;
   using TaskList = std::vector<TaskPtr>;
 
@@ -37,7 +37,7 @@ public:
   bool Empty() const noexcept;
   void Clear() noexcept;
 
-private:
+ private:
   TaskList tasks_;
   std::unordered_map<int32_t, TaskBase*> task_index_;
   std::vector<TaskBase*> last_filtered_tasks_;

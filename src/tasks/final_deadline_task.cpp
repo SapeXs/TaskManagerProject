@@ -1,22 +1,17 @@
 #include "tasks/final_deadline_task.h"
+
 #include "core/task_name.h"
 
-FinalDeadlineTask::FinalDeadlineTask(int32_t id, std::string title, 
-    std::string description, TaskPriority priority,
-    TagContainer tags, std::vector<std::string> step_texts,
-    std::string final_deadline_text, std::size_t current_step)
-    : SteppedDeadlineTask(
-          id,
-          std::move(title),
-          std::move(description),
-          priority,
-          std::move(tags),
-          std::move(step_texts),
-          current_step),
+FinalDeadlineTask::FinalDeadlineTask(int32_t id, std::string title, std::string description,
+                                     TaskPriority priority, TagContainer tags,
+                                     std::vector<std::string> step_texts,
+                                     std::string final_deadline_text, std::size_t current_step)
+    : SteppedDeadlineTask(id, std::move(title), std::move(description), priority, std::move(tags),
+                          std::move(step_texts), current_step),
       final_deadline_text_(std::move(final_deadline_text)) {}
 
 std::string_view FinalDeadlineTask::GetTypeName() const {
-    return task_names::kNameFinalDeadlineTask;
+  return task_names::kNameFinalDeadlineTask;
 }
 
 const std::string& FinalDeadlineTask::GetFinalDeadlineText() const noexcept {

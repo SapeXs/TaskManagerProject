@@ -1,3 +1,5 @@
+#include "app/command_handler.h"
+
 #include <memory>
 #include <span>
 #include <stdexcept>
@@ -5,7 +7,7 @@
 #include <utility>
 
 #include "tasks/reminder_task.h"
-#include "app/command_handler.h"
+
 #include "format/task_formatter.h"
 
 namespace {
@@ -77,14 +79,11 @@ bool ParseStateArg(const std::string& value, TaskState& state) {
   return false;
 }
 
-}
+}  // namespace
 
 CommandHandler::CommandHandler(TaskManager& task_manager, TaskStorage& storage,
                                std::mutex& task_mutex, int32_t& next_id)
-    : task_manager_(task_manager),
-      storage_(storage),
-      task_mutex_(task_mutex),
-      next_id_(next_id) {}
+    : task_manager_(task_manager), storage_(storage), task_mutex_(task_mutex), next_id_(next_id) {}
 
 std::string CommandHandler::Handle(const Command& command) {
   switch (command.GetType()) {
@@ -115,8 +114,7 @@ std::string CommandHandler::HandleAdd(const Command& command) {
   std::string title = JoinArgs(command.GetArgs());
 
   auto task = std::make_unique<ReminderTask>(
-      next_id_++, std::move(title), "", TaskPriority::kMediumPriority,
-      TaskBase::TagContainer{}, 0);
+      next_id_++, std::move(title), "", TaskPriority::kMediumPriority, TaskBase::TagContainer{}, 0);
 
   {
     std::lock_guard lock(task_mutex_);

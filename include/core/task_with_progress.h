@@ -6,23 +6,24 @@
 #include <utility>
 
 #include "progress/progress_concepts.h"
+
 #include "task_base.h"
 #include "task_priority.h"
 #include "task_state.h"
 
-template <ProgressLike ProgressType> class TaskWithProgress : public TaskBase {
-public:
+template <ProgressLike ProgressType>
+class TaskWithProgress : public TaskBase {
+ public:
   using TagContainer = TaskBase::TagContainer;
 
   template <class... ProgressArgs>
-  TaskWithProgress(int32_t id, std::string title, std::string description,
-                   TaskPriority priority, TagContainer tags,
-                   ProgressArgs &&...progress_args);
+  TaskWithProgress(int32_t id, std::string title, std::string description, TaskPriority priority,
+                   TagContainer tags, ProgressArgs&&... progress_args);
 
   TaskState GetState() const override;
   std::string GetProgressString() const override;
 
-protected:
+ protected:
   ProgressType& GetProgress();
 
   const ProgressType& GetProgress() const;

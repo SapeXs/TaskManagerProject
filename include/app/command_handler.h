@@ -4,14 +4,14 @@
 #include <mutex>
 #include <string>
 
+#include "commands/command.h"
 #include "manager/task_manager.h"
 #include "storage/task_storage.h"
-#include "commands/command.h"
 
 class CommandHandler {
  public:
-  CommandHandler(TaskManager& task_manager, TaskStorage& storage,
-                 std::mutex& task_mutex, int32_t& next_id);
+  CommandHandler(TaskManager& task_manager, TaskStorage& storage, std::mutex& task_mutex,
+                 int32_t& next_id);
 
   std::string Handle(const Command& command);
 

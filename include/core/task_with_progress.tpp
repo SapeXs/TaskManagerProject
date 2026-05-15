@@ -4,11 +4,10 @@
 
 template <ProgressLike ProgressType>
 template <class... ProgressArgs>
-TaskWithProgress<ProgressType>::TaskWithProgress(
-    int32_t id, std::string title, std::string description,
-    TaskPriority priority, TagContainer tags, ProgressArgs &&...progress_args)
-    : TaskBase(id, std::move(title), std::move(description), priority,
-               std::move(tags)),
+TaskWithProgress<ProgressType>::TaskWithProgress(int32_t id, std::string title,
+                                                 std::string description, TaskPriority priority,
+                                                 TagContainer tags, ProgressArgs&&... progress_args)
+    : TaskBase(id, std::move(title), std::move(description), priority, std::move(tags)),
       progress_(std::forward<ProgressArgs>(progress_args)...){};
 
 template <ProgressLike ProgressType>

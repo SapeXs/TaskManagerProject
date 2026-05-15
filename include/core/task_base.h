@@ -3,8 +3,8 @@
 #include <cstdint>
 #include <string>
 #include <string_view>
-#include <vector>
 #include <unordered_set>
+#include <vector>
 
 #include "core/task_priority.h"
 #include "core/task_state.h"
@@ -13,8 +13,8 @@ class TaskBase {
  public:
   using TagContainer = std::unordered_set<std::string>;
 
-  TaskBase(int32_t id, std::string title, std::string description,
-           TaskPriority priority, TagContainer tags);
+  TaskBase(int32_t id, std::string title, std::string description, TaskPriority priority,
+           TagContainer tags);
 
   virtual ~TaskBase() = default;
 
@@ -27,11 +27,11 @@ class TaskBase {
   const std::string& GetTitle() const noexcept;
   const std::string& GetDescription() const noexcept;
   TaskPriority GetPriority() const noexcept;
-  const TagContainer &GetTags() const noexcept;
+  const TagContainer& GetTags() const noexcept;
 
-  bool HasTag(const std::string &tag) const;
-  void AddTag(const std::string &tag);
-  void RemoveTag(const std::string &tag);
+  bool HasTag(const std::string& tag) const;
+  void AddTag(const std::string& tag);
+  void RemoveTag(const std::string& tag);
 
  protected:
   void SetTitle(std::string title);

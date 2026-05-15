@@ -9,13 +9,11 @@
 #include "commands/command_parser.h"
 
 DaemonApp::DaemonApp(std::chrono::seconds autosave_interval, std::filesystem::path socket_server)
-    : autosave_interval_(autosave_interval),
-      storage_("tasks.txt"), socket_server_(socket_server) {}
+    : autosave_interval_(autosave_interval), storage_("tasks.txt"), socket_server_(socket_server) {}
 
 void DaemonApp::Run() {
   CommandParser parser;
   CommandHandler handler(task_manager_, storage_, task_mutex_, next_id_);
-
 
   if (!socket_server_.Start()) {
     std::cerr << "Failed to start socket server\n";
@@ -33,11 +31,7 @@ void DaemonApp::Run() {
     }
   }
 
-  autosave_thread_ = std::jthread(
-    [this](std::stop_token stop_token) {
-      AutosaveLoop(stop_token);
-    }
-  );
+  autosave_thread_ = std::jthread([this](std::stop_token stop_token) { AutosaveLoop(stop_token); });
 
   std::cout << "TaskManager daemon started\n";
 

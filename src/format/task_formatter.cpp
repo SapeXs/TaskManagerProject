@@ -36,7 +36,7 @@ std::string PriorityToString(TaskPriority priority) {
   }
 }
 
-}
+}  // namespace
 
 std::string TaskFormatter::FormatTask(const TaskBase& task) {
   std::string result;
@@ -85,7 +85,8 @@ std::string TaskFormatter::FormatHelp() {
          "  list             - show all tasks\n"
          "  find <id>        - find task by id\n"
          "  filter priority <value>        - filter by priority: low, medium, high, critical\n"
-         "  filter state <value>           - filter by state: not_started, in_progress, done, overdue, scheduled\n"
+         "  filter state <value>           - filter by state: not_started, in_progress, done, "
+         "overdue, scheduled\n"
          "  filter tag <value>             - filter by tag\n"
          "  remove <id>      - remove task by id\n"
          "  save             - save tasks to storage\n"
