@@ -5,13 +5,14 @@
 
 namespace {
 const std::unordered_map<std::string, CommandType> kCommandMap = {
-    {"add",    CommandType::kAdd},
-    {"list",   CommandType::kList},
-    {"find",   CommandType::kFind},
-    {"remove", CommandType::kRemove},
-    {"filter", CommandType::kFilter},
-    {"help",   CommandType::kHelp},
-    {"exit",   CommandType::kExit}
+  {"add",    CommandType::kAdd},
+  {"list",   CommandType::kList},
+  {"find",   CommandType::kFind},
+  {"remove", CommandType::kRemove},
+  {"filter", CommandType::kFilter},
+  {"help",   CommandType::kHelp},
+  {"exit",   CommandType::kExit},
+  {"save", CommandType::kSave}
 };
 }
 
