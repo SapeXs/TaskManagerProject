@@ -2,6 +2,7 @@
 #include "ui/command_parser.h"
 #include "tasks/reminder_task.h"
 
+#include <algorithm>
 #include <chrono>
 #include <iostream>
 #include <memory>
@@ -44,6 +45,10 @@ void DaemonApp::Run() {
   {
     std::lock_guard lock(task_mutex_);
     storage_.Load(task_manager_);
+    next_id_ = 1;
+    for (const TaskBase* task : task_manager_.GetAllTasks()) {
+      next_id_ = std::max(next_id_, task->GetId() + 1);
+    }
   }
 
   autosave_thread_ = std::jthread(
@@ -70,12 +75,10 @@ void DaemonApp::Run() {
           break;
         }
 
-        static int32_t next_id = 1;
-
         std::string title = JoinArgs(command.GetArgs());
 
         auto task = std::make_unique<ReminderTask>(
-            next_id++, std::move(title), "", TaskPriority::kMediumPriority,
+            next_id_++, std::move(title), "", TaskPriority::kMediumPriority,
             TaskBase::TagContainer{}, 0);
 
         {

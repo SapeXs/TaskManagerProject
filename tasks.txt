@@ -1,1 +1,2 @@
-autosave
+Reminder Task|1|Read book||1||0
+Reminder Task|2|Do homework||1||0

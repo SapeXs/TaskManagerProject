@@ -32,4 +32,6 @@ private:
     std::jthread autosave_thread_;
 
     UnixSocketServer socket_server_;
+
+    int32_t next_id_ = 1;
 };
