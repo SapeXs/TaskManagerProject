@@ -6,6 +6,7 @@
 
 #include "tasks/reminder_task.h"
 #include "app/command_handler.h"
+#include "format/task_formatter.h"
 
 namespace {
 
@@ -42,6 +43,8 @@ std::string CommandHandler::Handle(const Command& command) {
       return HandleRemove(command);
     case CommandType::kSave:
       return HandleSave();
+    case CommandType::kHelp:
+      return HandleHelp();
     default:
       return "Unknown command";
   }
@@ -67,25 +70,9 @@ std::string CommandHandler::HandleAdd(const Command& command) {
 }
 
 std::string CommandHandler::HandleList() {
-  std::string response;
-
-  {
-    std::lock_guard lock(task_mutex_);
-    auto tasks = task_manager_.GetAllTasks();
-
-    for (const TaskBase* task : tasks) {
-      response += std::to_string(task->GetId());
-      response += " | ";
-      response += task->GetTitle();
-      response += '\n';
-    }
-  }
-
-  if (response.empty()) {
-    response = "No tasks";
-  }
-
-  return response;
+  std::lock_guard lock(task_mutex_);
+  auto tasks = task_manager_.GetAllTasks();
+  return TaskFormatter::FormatTaskList(tasks);
 }
 
 std::string CommandHandler::HandleRemove(const Command& command) {
@@ -121,4 +108,8 @@ std::string CommandHandler::HandleSave() {
   }
 
   return "Saved";
+}
+
+std::string CommandHandler::HandleHelp() {
+  return TaskFormatter::FormatHelp();
 }

@@ -24,6 +24,8 @@ add_library(task_manager_core
     src/commands/command.cpp
     src/commands/command_parser.cpp
     src/commands/command_type.cpp
+
+    src/format/task_formatter.cpp
 )
 
 target_include_directories(task_manager_core PUBLIC include)
