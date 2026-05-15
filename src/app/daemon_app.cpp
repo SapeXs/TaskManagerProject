@@ -4,7 +4,28 @@
 
 #include <chrono>
 #include <iostream>
+#include <memory>
+#include <span>
+#include <string>
 #include <thread>
+
+namespace {
+
+std::string JoinArgs(std::span<const std::string> args) {
+  std::string result;
+
+  for (std::size_t i = 0; i < args.size(); ++i) {
+    if (i > 0) {
+      result += ' ';
+    }
+
+    result += args[i];
+  }
+
+  return result;
+}
+
+}
 
 DaemonApp::DaemonApp(std::chrono::seconds autosave_interval, std::filesystem::path socket_server)
     : autosave_interval_(autosave_interval),
@@ -51,13 +72,11 @@ void DaemonApp::Run() {
 
         static int32_t next_id = 1;
 
+        std::string title = JoinArgs(command.GetArgs());
+
         auto task = std::make_unique<ReminderTask>(
-            next_id++,
-            command.GetArgs()[0],
-            "",
-            TaskPriority::kMediumPriority,
-            TaskBase::TagContainer{},
-            0);
+            next_id++, std::move(title), "", TaskPriority::kMediumPriority,
+            TaskBase::TagContainer{}, 0);
 
         {
           std::lock_guard lock(task_mutex_);
@@ -89,6 +108,46 @@ void DaemonApp::Run() {
         }
 
         socket_server_.SendResponse(response);
+        break;
+      }
+
+      case CommandType::kRemove: {
+        if (command.GetArgs().empty()) {
+          socket_server_.SendResponse("Missing task id");
+          break;
+        }
+
+        int32_t id = 0;
+
+        try {
+          id = std::stoi(command.GetArgs()[0]);
+        } catch (...) {
+          socket_server_.SendResponse("Invalid task id");
+          break;
+        }
+
+        {
+          std::lock_guard lock(task_mutex_);
+
+          if (task_manager_.FindTaskById(id) == nullptr) {
+            socket_server_.SendResponse("Task not found");
+            break;
+          }
+
+          task_manager_.RemoveTask(id);
+        }
+
+        socket_server_.SendResponse("Task removed");
+        break;
+      }
+
+      case CommandType::kSave: {
+        {
+          std::lock_guard lock(task_mutex_);
+          storage_.Save(task_manager_);
+        }
+
+        socket_server_.SendResponse("Saved");
         break;
       }
 
