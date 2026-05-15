@@ -1,6 +1,6 @@
-#include "core/task_with_progress.h"
+#pragma once
 
-using TagContainer = TaskBase::TagContainer;
+#include <utility>
 
 template <ProgressLike ProgressType>
 template <class... ProgressArgs>

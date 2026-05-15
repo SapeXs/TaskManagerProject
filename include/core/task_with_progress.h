@@ -30,3 +30,5 @@ protected:
  private:
   ProgressType progress_;
 };
+
+#include "src/core/task_with_progress.tpp"
