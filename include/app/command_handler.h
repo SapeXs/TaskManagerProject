@@ -20,6 +20,7 @@ class CommandHandler {
   std::string HandleList();
   std::string HandleRemove(const Command& command);
   std::string HandleSave();
+  std::string HandleFind(const Command& command);
   std::string HandleHelp();
 
   TaskManager& task_manager_;

@@ -83,6 +83,7 @@ std::string TaskFormatter::FormatHelp() {
   return "Available commands:\n"
          "  add <title>      - add reminder task\n"
          "  list             - show all tasks\n"
+         "  find <id>        - find task by id\n"
          "  remove <id>      - remove task by id\n"
          "  save             - save tasks to storage\n"
          "  help             - show this help";

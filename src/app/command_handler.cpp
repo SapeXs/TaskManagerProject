@@ -39,6 +39,8 @@ std::string CommandHandler::Handle(const Command& command) {
       return HandleAdd(command);
     case CommandType::kList:
       return HandleList();
+    case CommandType::kFind:
+      return HandleFind(command);
     case CommandType::kRemove:
       return HandleRemove(command);
     case CommandType::kSave:
@@ -73,6 +75,30 @@ std::string CommandHandler::HandleList() {
   std::lock_guard lock(task_mutex_);
   auto tasks = task_manager_.GetAllTasks();
   return TaskFormatter::FormatTaskList(tasks);
+}
+
+std::string CommandHandler::HandleFind(const Command& command) {
+  if (command.GetArgs().empty()) {
+    return "Missing task id";
+  }
+
+  int32_t id = 0;
+
+  try {
+    id = std::stoi(command.GetArgs()[0]);
+  } catch (const std::exception&) {
+    return "Invalid task id";
+  }
+
+  std::lock_guard lock(task_mutex_);
+
+  const TaskBase* task = task_manager_.FindTaskById(id);
+
+  if (task == nullptr) {
+    return "Task not found";
+  }
+
+  return TaskFormatter::FormatTask(*task);
 }
 
 std::string CommandHandler::HandleRemove(const Command& command) {
