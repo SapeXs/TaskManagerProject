@@ -2,20 +2,6 @@
 
 #include <algorithm>
 
-template <class Predicate>
-std::vector<TaskBase*> TaskManager::Filter(Predicate predicate) noexcept {
-  std::vector<TaskBase*> result;
-  result.reserve(tasks_.size());
-
-  for (const auto& task : tasks_) {
-    if (task != nullptr && predicate(*task)) {
-      result.emplace_back(task.get());
-    }
-  }
-
-  return result;
-}
-
 void TaskManager::AddTask(TaskPtr task) {
   if (task == nullptr) {
     return;
@@ -30,6 +16,8 @@ void TaskManager::AddTask(TaskPtr task) {
   TaskBase* raw_task = task.get();
   tasks_.push_back(std::move(task));
   task_index_[id] = raw_task;
+
+  last_filtered_tasks_.clear();
 }
 
 void TaskManager::RemoveTask(int32_t id) {
@@ -46,7 +34,7 @@ void TaskManager::RemoveTask(int32_t id) {
                               }),
                tasks_.end());
 
-  return;
+  last_filtered_tasks_.clear();
 }
 
 TaskBase* TaskManager::FindTaskById(int32_t id) noexcept {
@@ -93,20 +81,22 @@ std::vector<const TaskBase*> TaskManager::GetAllTasks() const noexcept {
   return result;
 }
 
-std::vector<TaskBase*> TaskManager::FilterByState(TaskState state) noexcept {
+std::span<TaskBase* const> TaskManager::GetLastFilteredTasks() noexcept {
+  return std::span<TaskBase* const>(last_filtered_tasks_);
+}
+
+std::span<TaskBase* const> TaskManager::FilterByState(TaskState state) noexcept {
   return Filter(
       [&state](const TaskBase& task) { return task.GetState() == state; });
 }
 
-std::vector<TaskBase*>
-TaskManager::FilterByPriority(TaskPriority priority) noexcept {
+std::span<TaskBase* const> TaskManager::FilterByPriority(TaskPriority priority) noexcept {
   return Filter([&priority](const TaskBase& task) {
     return task.GetPriority() == priority;
   });
 }
 
-std::vector<TaskBase*>
-TaskManager::FilterByTag(const std::string& tag) noexcept {
+std::span<TaskBase* const> TaskManager::FilterByTag(const std::string& tag) noexcept {
   return Filter([&tag](const TaskBase& task) { return task.HasTag(tag); });
 }
 
@@ -117,4 +107,5 @@ bool TaskManager::Empty() const noexcept { return tasks_.empty(); }
 void TaskManager::Clear() noexcept {
   tasks_.clear();
   task_index_.clear();
+  last_filtered_tasks_.clear();
 }
