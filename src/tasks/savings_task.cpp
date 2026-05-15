@@ -1,3 +1,4 @@
+#include "core/task_name.h"
 #include "tasks/savings_task.h"
 
 SavingsTask::SavingsTask(int32_t id, std::string title, std::string description,
@@ -7,10 +8,9 @@ SavingsTask::SavingsTask(int32_t id, std::string title, std::string description,
                                            priority, std::move(tags),
                                            current_value, target_value) {}
 
-std::string SavingsTask::GetTypeName() const {
-    return "SavingsTask";
+std::string_view SavingsTask::GetTypeName() const {
+  return task_names::kNameSavingTask;
 }
-
 int64_t SavingsTask::GetCurrentValue() const noexcept {
     return GetProgress().GetCurrentValue();
 }
@@ -20,5 +20,9 @@ int64_t SavingsTask::GetTargetValue() const noexcept {
 }
 
 void SavingsTask::AddValue(int64_t value) noexcept {
-    GetProgress().AddValue(value);
+    GetProgress().Add(value);
+}
+
+std::vector<std::string> SavingsTask::GetStorageFields() const {
+  return {std::to_string(GetCurrentValue()), std::to_string(GetTargetValue())};
 }

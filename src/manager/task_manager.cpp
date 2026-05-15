@@ -17,7 +17,7 @@ void TaskManager::AddTask(TaskPtr task) {
   tasks_.push_back(std::move(task));
   task_index_[id] = raw_task;
 
-  return;
+  last_filtered_tasks_.clear();
 }
 
 void TaskManager::RemoveTask(int32_t id) {
@@ -30,11 +30,11 @@ void TaskManager::RemoveTask(int32_t id) {
 
   tasks_.erase(std::remove_if(tasks_.begin(), tasks_.end(),
                               [id](const TaskPtr& task) {
-                                return task != nullptr &task->GetId() == id;
+                                return task != nullptr && task->GetId() == id;
                               }),
                tasks_.end());
 
-  return;
+  last_filtered_tasks_.clear();
 }
 
 TaskBase* TaskManager::FindTaskById(int32_t id) noexcept {
@@ -61,7 +61,7 @@ std::vector<TaskBase*> TaskManager::GetAllTasks() noexcept {
 
   for (const auto& task : tasks_) {
     if (task != nullptr) {
-      result.push_back(task.get());
+      result.emplace_back(task.get());
     }
   }
 
@@ -74,27 +74,29 @@ std::vector<const TaskBase*> TaskManager::GetAllTasks() const noexcept {
 
   for (const auto& task : tasks_) {
     if (task != nullptr) {
-      result.push_back(task.get());
+      result.emplace_back(task.get());
     }
   }
 
   return result;
 }
 
-std::vector<TaskBase*> TaskManager::FilterByState(TaskState& state) noexcept {
+std::span<TaskBase* const> TaskManager::GetLastFilteredTasks() noexcept {
+  return std::span<TaskBase* const>(last_filtered_tasks_);
+}
+
+std::span<TaskBase* const> TaskManager::FilterByState(TaskState state) noexcept {
   return Filter(
       [&state](const TaskBase& task) { return task.GetState() == state; });
 }
 
-std::vector<TaskBase*>
-TaskManager::FilterByPriority(TaskPriority& priority) noexcept {
+std::span<TaskBase* const> TaskManager::FilterByPriority(TaskPriority priority) noexcept {
   return Filter([&priority](const TaskBase& task) {
     return task.GetPriority() == priority;
   });
 }
 
-std::vector<TaskBase*>
-TaskManager::FilterByTag(std::string& tag) noexcept {
+std::span<TaskBase* const> TaskManager::FilterByTag(const std::string& tag) noexcept {
   return Filter([&tag](const TaskBase& task) { return task.HasTag(tag); });
 }
 
@@ -105,4 +107,5 @@ bool TaskManager::Empty() const noexcept { return tasks_.empty(); }
 void TaskManager::Clear() noexcept {
   tasks_.clear();
   task_index_.clear();
+  last_filtered_tasks_.clear();
 }

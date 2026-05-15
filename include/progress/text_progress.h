@@ -1,33 +1,27 @@
 #pragma once
 
 #include <string>
+#include <utility>
 
 #include "core/task_state.h"
 
 class TextProgress {
- public:
+public:
   TextProgress(std::string text, TaskState state)
-      : text_(std::move(text)), state_(state) {
-  }
+      : text_(std::move(text)), state_(state) {}
 
-  const std::string& GetText() const noexcept {
-    return text_;
-  }
+  const std::string& GetText() const noexcept { return text_; }
 
   void Set(std::string text, TaskState state) {
     text_ = std::move(text);
     state_ = state;
   }
 
-  std::string ToString() const {
-    return text_;
-  }
+  std::string ToString() const { return text_; }
 
-  TaskState GetState() const noexcept {
-    return state_;
-  }
+  TaskState GetState() const noexcept { return state_; }
 
- private:
+private:
   std::string text_;
   TaskState state_;
 };

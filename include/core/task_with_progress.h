@@ -3,24 +3,21 @@
 #include <concepts>
 #include <cstdint>
 #include <string>
+#include <utility>
 
+#include "progress/progress_concepts.h"
 #include "task_base.h"
 #include "task_priority.h"
 #include "task_state.h"
-
-template <class ProgressType>
-concept ProgressLike = requires(const ProgressType &progress) {
-  { progress.ToString() } -> std::same_as<std::string>;
-  { progress.GetState() } -> std::same_as<TaskState>;
-};
 
 template <ProgressLike ProgressType> class TaskWithProgress : public TaskBase {
 public:
   using TagContainer = TaskBase::TagContainer;
 
+  template <class... ProgressArgs>
   TaskWithProgress(int32_t id, std::string title, std::string description,
                    TaskPriority priority, TagContainer tags,
-                   int64_t seconds_left);
+                   ProgressArgs &&...progress_args);
 
   TaskState GetState() const override;
   std::string GetProgressString() const override;
@@ -28,6 +25,10 @@ public:
 protected:
   ProgressType& GetProgress();
 
-private:
+  const ProgressType& GetProgress() const;
+
+ private:
   ProgressType progress_;
 };
+
+#include "core/task_with_progress.tpp"
