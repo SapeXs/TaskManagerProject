@@ -9,7 +9,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(task_manager_core
     src/core/task_base.cpp
     src/manager/task_manager.cpp
+
     src/storage/task_storage.cpp
+    src/storage/storage_codec.cpp
+    src/storage/task_constructor.cpp
 
     src/tasks/recurring_task.cpp
     src/tasks/bounded_recurring_task.cpp
