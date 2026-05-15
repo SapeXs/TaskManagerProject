@@ -1,4 +1,4 @@
-#include "ui/command_type.h"
+#include "commands/command_type.h"
 #include <string_view>
 
 std::string_view ToString(CommandType type) {

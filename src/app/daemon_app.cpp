@@ -6,7 +6,7 @@
 #include <thread>
 
 #include "app/command_handler.h"
-#include "ui/command_parser.h"
+#include "commands/command_parser.h"
 
 DaemonApp::DaemonApp(std::chrono::seconds autosave_interval, std::filesystem::path socket_server)
     : autosave_interval_(autosave_interval),

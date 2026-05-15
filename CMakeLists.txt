@@ -21,9 +21,9 @@ add_library(task_manager_core
     src/tasks/stepped_deadline_task.cpp
     src/tasks/final_deadline_task.cpp
 
-    src/ui/command.cpp
-    src/ui/command_parser.cpp
-    src/ui/command_type.cpp
+    src/commands/command.cpp
+    src/commands/command_parser.cpp
+    src/commands/command_type.cpp
 )
 
 target_include_directories(task_manager_core PUBLIC include)

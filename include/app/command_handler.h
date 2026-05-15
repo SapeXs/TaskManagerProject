@@ -6,7 +6,7 @@
 
 #include "manager/task_manager.h"
 #include "storage/task_storage.h"
-#include "ui/command.h"
+#include "commands/command.h"
 
 class CommandHandler {
  public:

@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "ui/command_type.h"
+#include "commands/command_type.h"
 
 class Command {
  public:
