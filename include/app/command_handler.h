@@ -18,9 +18,10 @@ class CommandHandler {
  private:
   std::string HandleAdd(const Command& command);
   std::string HandleList();
-  std::string HandleRemove(const Command& command);
-  std::string HandleSave();
   std::string HandleFind(const Command& command);
+  std::string HandleRemove(const Command& command);
+  std::string HandleFilter(const Command& command);
+  std::string HandleSave();
   std::string HandleHelp();
 
   TaskManager& task_manager_;

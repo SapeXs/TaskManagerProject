@@ -24,6 +24,59 @@ std::string JoinArgs(std::span<const std::string> args) {
   return result;
 }
 
+bool ParsePriorityArg(const std::string& value, TaskPriority& priority) {
+  if (value == "low") {
+    priority = TaskPriority::kLowPriority;
+    return true;
+  }
+
+  if (value == "medium") {
+    priority = TaskPriority::kMediumPriority;
+    return true;
+  }
+
+  if (value == "high") {
+    priority = TaskPriority::kHighPriority;
+    return true;
+  }
+
+  if (value == "critical") {
+    priority = TaskPriority::kCriticalPriority;
+    return true;
+  }
+
+  return false;
+}
+
+bool ParseStateArg(const std::string& value, TaskState& state) {
+  if (value == "not_started") {
+    state = TaskState::kNotStarted;
+    return true;
+  }
+
+  if (value == "in_progress") {
+    state = TaskState::kInProgress;
+    return true;
+  }
+
+  if (value == "done") {
+    state = TaskState::kDone;
+    return true;
+  }
+
+  if (value == "overdue") {
+    state = TaskState::kOverdue;
+    return true;
+  }
+
+  if (value == "scheduled") {
+    state = TaskState::kScheduled;
+    return true;
+  }
+
+  return false;
+}
+
 }
 
 CommandHandler::CommandHandler(TaskManager& task_manager, TaskStorage& storage,
@@ -43,6 +96,8 @@ std::string CommandHandler::Handle(const Command& command) {
       return HandleFind(command);
     case CommandType::kRemove:
       return HandleRemove(command);
+    case CommandType::kFilter:
+      return HandleFilter(command);
     case CommandType::kSave:
       return HandleSave();
     case CommandType::kHelp:
@@ -99,6 +154,46 @@ std::string CommandHandler::HandleFind(const Command& command) {
   }
 
   return TaskFormatter::FormatTask(*task);
+}
+
+std::string CommandHandler::HandleFilter(const Command& command) {
+  if (command.GetArgs().size() < 2) {
+    return "Usage: filter <priority|state|tag> <value>";
+  }
+
+  const std::string& field = command.GetArgs()[0];
+  const std::string& value = command.GetArgs()[1];
+
+  std::lock_guard lock(task_mutex_);
+
+  if (field == "priority") {
+    TaskPriority priority;
+
+    if (!ParsePriorityArg(value, priority)) {
+      return "Invalid priority. Available: low, medium, high, critical";
+    }
+
+    auto tasks = task_manager_.FilterByPriority(priority);
+    return TaskFormatter::FormatTaskList(tasks);
+  }
+
+  if (field == "state") {
+    TaskState state;
+
+    if (!ParseStateArg(value, state)) {
+      return "Invalid state. Available: not_started, in_progress, done, overdue, scheduled";
+    }
+
+    auto tasks = task_manager_.FilterByState(state);
+    return TaskFormatter::FormatTaskList(tasks);
+  }
+
+  if (field == "tag") {
+    auto tasks = task_manager_.FilterByTag(value);
+    return TaskFormatter::FormatTaskList(tasks);
+  }
+
+  return "Unknown filter field. Available: priority, state, tag";
 }
 
 std::string CommandHandler::HandleRemove(const Command& command) {
