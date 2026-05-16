@@ -103,7 +103,13 @@ std::string TaskFormatter::FormatTaskList(std::span<const TaskBase* const> tasks
 
 std::string TaskFormatter::FormatHelp() {
   return "Available commands:\n"
-         "  add <title> [--priority value] [--tag value] - add reminder task\n"
+         "  add reminder <title> [--seconds n] [--priority value] [--tag value]\n"
+         "  add recurring <title> --seconds n --interval n [--priority value] [--tag value]\n"
+         "  add bounded <title> --seconds n --interval n --repeats n [--priority value] [--tag "
+         "value]\n"
+         "  add savings <title> --current n --target n [--priority value] [--tag value]\n"
+         "  add stepped <title> --step text [--step text ...] [--current-step n]\n"
+         "  add final <title> --step text [--step text ...] --final text [--current-step n]\n"
          "  list             - show all tasks\n"
          "  find <id>        - find task by id\n"
          "  filter priority <value>        - filter by priority: low, medium, high, critical\n"
