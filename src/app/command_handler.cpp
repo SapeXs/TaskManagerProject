@@ -9,6 +9,7 @@
 #include <utility>
 #include <vector>
 
+#include "core/duration_parser.h"
 #include "core/task_converters.h"
 #include "storage/task_constructor.h"
 #include "tasks/tasks_lib.h"
@@ -194,23 +195,35 @@ std::string CommandHandler::HandleAdd(const Command& command) {
       continue;
     }
 
-    if (args[i] == "--seconds") {
+    if (args[i] == "--seconds" || args[i] == "--time") {
+      if (i + 1 >= args.size()) {
+        return "Missing value for " + args[i];
+      }
+
       int64_t value = 0;
-      if (!ReadInt64(args, i, "--seconds", value, error)) {
+
+      if (!TryParseDuration(args[i + 1], value, error)) {
         return error;
       }
 
       options.seconds_left = value;
+      ++i;
       continue;
     }
 
     if (args[i] == "--interval") {
+      if (i + 1 >= args.size()) {
+        return "Missing value for --interval";
+      }
+
       int64_t value = 0;
-      if (!ReadInt64(args, i, "--interval", value, error)) {
+
+      if (!TryParseDuration(args[i + 1], value, error)) {
         return error;
       }
 
       options.repeat_interval_seconds = value;
+      ++i;
       continue;
     }
 
