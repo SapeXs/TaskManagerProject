@@ -2,39 +2,9 @@
 
 #include <string>
 
+#include "core/task_converters.h"
+
 namespace {
-
-std::string StateToString(TaskState state) {
-  switch (state) {
-    case TaskState::kNotStarted:
-      return "not_started";
-    case TaskState::kInProgress:
-      return "in_progress";
-    case TaskState::kDone:
-      return "done";
-    case TaskState::kOverdue:
-      return "overdue";
-    case TaskState::kScheduled:
-      return "scheduled";
-    default:
-      return "unknown";
-  }
-}
-
-std::string PriorityToString(TaskPriority priority) {
-  switch (priority) {
-    case TaskPriority::kLowPriority:
-      return "low";
-    case TaskPriority::kMediumPriority:
-      return "medium";
-    case TaskPriority::kHighPriority:
-      return "high";
-    case TaskPriority::kCriticalPriority:
-      return "critical";
-    default:
-      return "unknown";
-  }
-}
 
 std::string TagsToString(const TaskBase::TagContainer& tags) {
   if (tags.empty()) {
@@ -67,9 +37,9 @@ std::string TaskFormatter::FormatTask(const TaskBase& task) {
   result += " | ";
   result += task.GetTitle();
   result += " | priority: ";
-  result += PriorityToString(task.GetPriority());
+  result += TaskPriorityToString(task.GetPriority());
   result += " | state: ";
-  result += StateToString(task.GetState());
+  result += TaskStateToString(task.GetState());
   result += " | progress: ";
   result += task.GetProgressString();
   result += " | tags: ";

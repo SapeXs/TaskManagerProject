@@ -9,6 +9,7 @@
 #include <utility>
 #include <vector>
 
+#include "core/task_converters.h"
 #include "storage/task_constructor.h"
 #include "tasks/tasks_lib.h"
 
@@ -28,59 +29,6 @@ std::string JoinArgs(std::span<const std::string> args) {
   }
 
   return result;
-}
-
-bool ParsePriorityArg(const std::string& value, TaskPriority& priority) {
-  if (value == "low") {
-    priority = TaskPriority::kLowPriority;
-    return true;
-  }
-
-  if (value == "medium") {
-    priority = TaskPriority::kMediumPriority;
-    return true;
-  }
-
-  if (value == "high") {
-    priority = TaskPriority::kHighPriority;
-    return true;
-  }
-
-  if (value == "critical") {
-    priority = TaskPriority::kCriticalPriority;
-    return true;
-  }
-
-  return false;
-}
-
-bool ParseStateArg(const std::string& value, TaskState& state) {
-  if (value == "not_started") {
-    state = TaskState::kNotStarted;
-    return true;
-  }
-
-  if (value == "in_progress") {
-    state = TaskState::kInProgress;
-    return true;
-  }
-
-  if (value == "done") {
-    state = TaskState::kDone;
-    return true;
-  }
-
-  if (value == "overdue") {
-    state = TaskState::kOverdue;
-    return true;
-  }
-
-  if (value == "scheduled") {
-    state = TaskState::kScheduled;
-    return true;
-  }
-
-  return false;
 }
 
 bool ParseTaskType(const std::string& value, AddTaskType& type) {
@@ -228,7 +176,7 @@ std::string CommandHandler::HandleAdd(const Command& command) {
         return "Missing priority value";
       }
 
-      if (!ParsePriorityArg(args[i + 1], options.priority)) {
+      if (!ParseTaskPriority(args[i + 1], options.priority)) {
         return "Invalid priority. Available: low, medium, high, critical";
       }
 
@@ -394,7 +342,7 @@ std::string CommandHandler::HandleFilter(const Command& command) {
   if (field == "priority") {
     TaskPriority priority;
 
-    if (!ParsePriorityArg(value, priority)) {
+    if (!ParseTaskPriority(value, priority)) {
       return "Invalid priority. Available: low, medium, high, critical";
     }
 
@@ -405,7 +353,7 @@ std::string CommandHandler::HandleFilter(const Command& command) {
   if (field == "state") {
     TaskState state;
 
-    if (!ParseStateArg(value, state)) {
+    if (!ParseTaskState(value, state)) {
       return "Invalid state. Available: not_started, in_progress, done, overdue, scheduled";
     }
 
