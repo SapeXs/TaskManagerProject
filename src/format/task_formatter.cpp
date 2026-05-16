@@ -36,6 +36,26 @@ std::string PriorityToString(TaskPriority priority) {
   }
 }
 
+std::string TagsToString(const TaskBase::TagContainer& tags) {
+  if (tags.empty()) {
+    return "-";
+  }
+
+  std::string result;
+  bool first = true;
+
+  for (const std::string& tag : tags) {
+    if (!first) {
+      result += ", ";
+    }
+
+    first = false;
+    result += tag;
+  }
+
+  return result;
+}
+
 }  // namespace
 
 std::string TaskFormatter::FormatTask(const TaskBase& task) {
@@ -52,6 +72,8 @@ std::string TaskFormatter::FormatTask(const TaskBase& task) {
   result += StateToString(task.GetState());
   result += " | progress: ";
   result += task.GetProgressString();
+  result += " | tags: ";
+  result += TagsToString(task.GetTags());
 
   return result;
 }
@@ -81,7 +103,7 @@ std::string TaskFormatter::FormatTaskList(std::span<const TaskBase* const> tasks
 
 std::string TaskFormatter::FormatHelp() {
   return "Available commands:\n"
-         "  add <title>      - add reminder task\n"
+         "  add <title> [--priority value] [--tag value] - add reminder task\n"
          "  list             - show all tasks\n"
          "  find <id>        - find task by id\n"
          "  filter priority <value>        - filter by priority: low, medium, high, critical\n"
