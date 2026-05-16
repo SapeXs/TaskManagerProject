@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "tasks/reminder_task.h"
 
@@ -111,10 +112,47 @@ std::string CommandHandler::HandleAdd(const Command& command) {
     return "Missing title";
   }
 
-  std::string title = JoinArgs(command.GetArgs());
+  std::vector<std::string> title_parts;
+  TaskPriority priority = TaskPriority::kMediumPriority;
+  TaskBase::TagContainer tags;
 
-  auto task = std::make_unique<ReminderTask>(
-      next_id_++, std::move(title), "", TaskPriority::kMediumPriority, TaskBase::TagContainer{}, 0);
+  auto args = command.GetArgs();
+
+  for (std::size_t i = 0; i < args.size(); ++i) {
+    if (args[i] == "--priority") {
+      if (i + 1 >= args.size()) {
+        return "Missing priority value";
+      }
+
+      if (!ParsePriorityArg(args[i + 1], priority)) {
+        return "Invalid priority. Available: low, medium, high, critical";
+      }
+
+      ++i;
+      continue;
+    }
+
+    if (args[i] == "--tag") {
+      if (i + 1 >= args.size()) {
+        return "Missing tag value";
+      }
+
+      tags.insert(args[i + 1]);
+      ++i;
+      continue;
+    }
+
+    title_parts.push_back(args[i]);
+  }
+
+  if (title_parts.empty()) {
+    return "Missing title";
+  }
+
+  std::string title = JoinArgs(title_parts);
+
+  auto task = std::make_unique<ReminderTask>(next_id_++, std::move(title), "", priority,
+                                             std::move(tags), 0);
 
   {
     std::lock_guard lock(task_mutex_);
