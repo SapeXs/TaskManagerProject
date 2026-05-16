@@ -9,11 +9,11 @@
 #include "progress/time_left_progress.h"
 
 class ReminderTask : public TaskWithProgress<TimeLeftProgress> {
-public:
+ public:
   using TagContainer = TaskBase::TagContainer;
 
-  ReminderTask(int32_t id, std::string title, std::string description,
-               TaskPriority priority, TagContainer tags, int64_t seconds_left);
+  ReminderTask(int32_t id, std::string title, std::string description, TaskPriority priority,
+               TagContainer tags, int64_t seconds_left);
 
   std::string_view GetTypeName() const;
 

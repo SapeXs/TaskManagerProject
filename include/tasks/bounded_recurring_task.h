@@ -6,11 +6,10 @@
 #include "tasks/recurring_task.h"
 
 class BoundedRecurringTask : public RecurringTask {
-public:
+ public:
   BoundedRecurringTask(int32_t id, std::string title, std::string description,
-                       TaskPriority priority, TagContainer tags,
-                       int64_t seconds_left, int64_t repeat_interval_seconds,
-                       int32_t repeats_left);
+                       TaskPriority priority, TagContainer tags, int64_t seconds_left,
+                       int64_t repeat_interval_seconds, int32_t repeats_left);
 
   std::string_view GetTypeName() const;
 
@@ -22,6 +21,6 @@ public:
 
   std::vector<std::string> GetStorageFields() const override;
 
-private:
+ private:
   int32_t repeats_left_;
 };

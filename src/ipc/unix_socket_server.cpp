@@ -1,14 +1,12 @@
 #include "ipc/unix_socket_server.h"
 
+#include <cstring>
+#include <iostream>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
 
-#include <cstring>
-#include <iostream>
-
-UnixSocketServer::UnixSocketServer(
-    std::filesystem::path socket_path)
+UnixSocketServer::UnixSocketServer(std::filesystem::path socket_path)
     : socket_path_(std::move(socket_path)) {}
 
 UnixSocketServer::~UnixSocketServer() {
@@ -25,16 +23,11 @@ bool UnixSocketServer::Start() {
   sockaddr_un address{};
   address.sun_family = AF_UNIX;
 
-  std::strncpy(
-      address.sun_path,
-      socket_path_.c_str(),
-      sizeof(address.sun_path) - 1);
+  std::strncpy(address.sun_path, socket_path_.c_str(), sizeof(address.sun_path) - 1);
 
   unlink(socket_path_.c_str());
 
-  if (bind(server_fd_,
-           reinterpret_cast<sockaddr*>(&address),
-           sizeof(address)) < 0) {
+  if (bind(server_fd_, reinterpret_cast<sockaddr*>(&address), sizeof(address)) < 0) {
     return false;
   }
 
@@ -69,11 +62,7 @@ bool UnixSocketServer::SendResponse(const std::string& response) {
     return false;
   }
 
-  ssize_t bytes = write(
-    client_fd_,
-    response.c_str(),
-    response.size()
-  );
+  ssize_t bytes = write(client_fd_, response.c_str(), response.size());
 
   close(client_fd_);
   client_fd_ = -1;
@@ -83,8 +72,8 @@ bool UnixSocketServer::SendResponse(const std::string& response) {
 
 void UnixSocketServer::Shutdown() {
   if (client_fd_ != -1) {
-      close(client_fd_);
-      client_fd_ = -1;
+    close(client_fd_);
+    client_fd_ = -1;
   }
 
   if (server_fd_ != -1) {

@@ -2,6 +2,8 @@
 
 #include <sstream>
 
+#include "core/task_converters.h"
+
 std::string EscapeStorageField(const std::string& value) {
   std::string result;
 
@@ -69,18 +71,5 @@ TaskBase::TagContainer ParseStorageTags(const std::string& value) {
 }
 
 TaskPriority ParseTaskPriority(const std::string& value) {
-  int priority = std::stoi(value);
-
-  switch (priority) {
-    case 0:
-      return TaskPriority::kLowPriority;
-    case 1:
-      return TaskPriority::kMediumPriority;
-    case 2:
-      return TaskPriority::kHighPriority;
-    case 3:
-      return TaskPriority::kCriticalPriority;
-    default:
-      return TaskPriority::kMediumPriority;
-  }
+  return TaskPriorityFromStorageValue(std::stoi(value));
 }

@@ -28,11 +28,10 @@ void TaskManager::RemoveTask(int32_t id) {
 
   task_index_.erase(it);
 
-  tasks_.erase(std::remove_if(tasks_.begin(), tasks_.end(),
-                              [id](const TaskPtr& task) {
-                                return task != nullptr && task->GetId() == id;
-                              }),
-               tasks_.end());
+  tasks_.erase(
+      std::remove_if(tasks_.begin(), tasks_.end(),
+                     [id](const TaskPtr& task) { return task != nullptr && task->GetId() == id; }),
+      tasks_.end());
 
   last_filtered_tasks_.clear();
 }
@@ -86,23 +85,24 @@ std::span<TaskBase* const> TaskManager::GetLastFilteredTasks() noexcept {
 }
 
 std::span<TaskBase* const> TaskManager::FilterByState(TaskState state) noexcept {
-  return Filter(
-      [&state](const TaskBase& task) { return task.GetState() == state; });
+  return Filter([&state](const TaskBase& task) { return task.GetState() == state; });
 }
 
 std::span<TaskBase* const> TaskManager::FilterByPriority(TaskPriority priority) noexcept {
-  return Filter([&priority](const TaskBase& task) {
-    return task.GetPriority() == priority;
-  });
+  return Filter([&priority](const TaskBase& task) { return task.GetPriority() == priority; });
 }
 
 std::span<TaskBase* const> TaskManager::FilterByTag(const std::string& tag) noexcept {
   return Filter([&tag](const TaskBase& task) { return task.HasTag(tag); });
 }
 
-std::size_t TaskManager::Size() const noexcept { return tasks_.size(); }
+std::size_t TaskManager::Size() const noexcept {
+  return tasks_.size();
+}
 
-bool TaskManager::Empty() const noexcept { return tasks_.empty(); }
+bool TaskManager::Empty() const noexcept {
+  return tasks_.empty();
+}
 
 void TaskManager::Clear() noexcept {
   tasks_.clear();

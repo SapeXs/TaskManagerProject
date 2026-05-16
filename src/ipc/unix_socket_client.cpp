@@ -1,10 +1,9 @@
 #include "ipc/unix_socket_client.h"
 
+#include <cstring>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
-
-#include <cstring>
 
 UnixSocketClient::UnixSocketClient(std::filesystem::path socket_path)
     : socket_path_(std::move(socket_path)) {}
@@ -19,11 +18,7 @@ std::string UnixSocketClient::SendRequest(const std::string& request) {
   sockaddr_un address{};
   address.sun_family = AF_UNIX;
 
-  std::strncpy(
-    address.sun_path,
-    socket_path_.c_str(),
-    sizeof(address.sun_path) - 1
-  );
+  std::strncpy(address.sun_path, socket_path_.c_str(), sizeof(address.sun_path) - 1);
 
   if (connect(socket_fd, reinterpret_cast<sockaddr*>(&address), sizeof(address)) < 0) {
     close(socket_fd);
@@ -34,10 +29,7 @@ std::string UnixSocketClient::SendRequest(const std::string& request) {
 
   char buffer[4096]{};
 
-  ssize_t bytes = read(socket_fd,
-           buffer,
-           sizeof(buffer)
-          );
+  ssize_t bytes = read(socket_fd, buffer, sizeof(buffer));
 
   close(socket_fd);
 

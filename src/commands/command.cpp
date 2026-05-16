@@ -1,6 +1,6 @@
-#include <utility>
-
 #include "commands/command.h"
+
+#include <utility>
 
 Command::Command(CommandType type, std::vector<std::string> args)
     : type_(type), args_(std::move(args)) {}

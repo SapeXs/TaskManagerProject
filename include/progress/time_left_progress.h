@@ -16,16 +16,19 @@ constexpr std::string kSecondsLeft = " sec left";
 constexpr std::string kMinutesLeft = " min left";
 constexpr std::string kHoursLeft = " hours left";
 constexpr std::string kDaysLeft = " days left";
-} // namespace
+}  // namespace
 
 class TimeLeftProgress {
-public:
-  explicit TimeLeftProgress(int64_t seconds_left)
-      : seconds_left_(seconds_left) {}
+ public:
+  explicit TimeLeftProgress(int64_t seconds_left) : seconds_left_(seconds_left) {}
 
-  int64_t GetSecondsLeft() const noexcept { return seconds_left_; }
+  int64_t GetSecondsLeft() const noexcept {
+    return seconds_left_;
+  }
 
-  void SetSecondsLeft(int64_t seconds_left) noexcept { seconds_left_ = seconds_left; }
+  void SetSecondsLeft(int64_t seconds_left) noexcept {
+    seconds_left_ = seconds_left;
+  }
 
   std::string ToString() const {
     if (seconds_left_ < kZero) {
@@ -57,6 +60,6 @@ public:
     return TaskState::kScheduled;
   }
 
-private:
+ private:
   int64_t seconds_left_;
 };

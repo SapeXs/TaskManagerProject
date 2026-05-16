@@ -8,8 +8,7 @@ DaemonApp* g_app = nullptr;
 
 void HandleSignal(int signal) {
   if (g_app != nullptr) {
-    std::cout << "\nReceived signal: "
-              << signal << '\n';
+    std::cout << "\nReceived signal: " << signal << '\n';
 
     g_app->Stop();
   }
