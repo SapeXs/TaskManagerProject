@@ -34,6 +34,7 @@ endif()
 add_library(
   task_manager_core
   src/core/task_base.cpp
+  src/core/task_converters.cpp
   src/manager/task_manager.cpp
   src/storage/task_storage.cpp
   src/storage/storage_codec.cpp
