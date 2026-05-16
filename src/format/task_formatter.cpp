@@ -133,6 +133,68 @@ Filtering:
       Example:
         taskctl filter tag study
 
+General task editing:
+  set-title <id> <new title>
+      Change task title.
+      Example:
+        taskctl set-title 3 "Read C++ book"
+
+  set-description <id> <new description>
+      Change task description.
+      Example:
+        taskctl set-description 3 "Important university task"
+
+  set-priority <id> <low|medium|high|critical>
+      Change task priority.
+      Example:
+        taskctl set-priority 3 high
+
+  add-tag <id> <tag>
+      Add tag to task.
+      Example:
+        taskctl add-tag 3 study
+
+  remove-tag <id> <tag>
+      Remove tag from task.
+      Example:
+        taskctl remove-tag 3 study
+
+Progress and type-specific editing:
+  set-time <id> <duration>
+      Change time left for reminder or recurring task.
+      Example:
+        taskctl set-time 3 2h
+
+  set-interval <id> <duration>
+      Change repeat interval for recurring or bounded recurring task.
+      Example:
+        taskctl set-interval 4 1w
+
+  set-repeats <id> <count>
+      Change repeats count for bounded recurring task.
+      Example:
+        taskctl set-repeats 4 10
+
+  add-value <id> <value>
+      Add value to savings task progress.
+      Example:
+        taskctl add-value 5 5000
+
+  advance <id>
+      Move stepped or final deadline task to the next step.
+      Example:
+        taskctl advance 6
+
+  overdue <id>
+      Mark stepped or final deadline task as overdue.
+      Example:
+        taskctl overdue 6
+
+  reset <id>
+      Reset recurring or bounded recurring task to next occurrence.
+      Example:
+        taskctl reset 4
+
 Managing:
   remove <id>
       Remove task by id.
@@ -166,12 +228,24 @@ Hints:
     You can pass several tags:
       taskctl add reminder "Read book" --tag study --tag university
 
+    You can modify tags later:
+      taskctl add-tag 3 university
+      taskctl remove-tag 3 study
+
   Titles and values with spaces:
     Use quotes:
       taskctl add reminder "Read big book" --tag "very important"
+      taskctl set-title 3 "Read advanced C++ book"
 
   Default behavior:
     If task type is omitted, reminder is used.
     If priority is omitted, medium is used.
+
+  Notes:
+    set-time works only for reminder, recurring and bounded recurring tasks.
+    set-interval and reset work only for recurring and bounded recurring tasks.
+    set-repeats works only for bounded recurring tasks.
+    add-value works only for savings tasks.
+    advance and overdue work only for stepped and final deadline tasks.
 )";
 }
