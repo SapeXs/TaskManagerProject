@@ -33,10 +33,11 @@ class TaskBase {
   void AddTag(const std::string& tag);
   void RemoveTag(const std::string& tag);
 
- protected:
   void SetTitle(std::string title);
   void SetDescription(std::string description);
   void SetPriority(TaskPriority priority);
+
+ protected:
   void SetTags(TagContainer tags);
   void SetTags(std::string tag);
 
