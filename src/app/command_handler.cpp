@@ -1,9 +1,11 @@
 #include "app/command_handler.h"
 
+#include <cstdint>
 #include <memory>
 #include <span>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -115,6 +117,64 @@ bool ParseTaskType(const std::string& value, AddTaskType& type) {
   return false;
 }
 
+bool ReadInt64(std::span<const std::string> args, std::size_t& index, std::string_view option,
+               int64_t& value, std::string& error) {
+  if (index + 1 >= args.size()) {
+    error = "Missing value for " + std::string(option);
+    return false;
+  }
+
+  try {
+    std::size_t parsed_chars = 0;
+    value = std::stoll(args[index + 1], &parsed_chars);
+
+    if (parsed_chars != args[index + 1].size()) {
+      error = "Invalid integer value for " + std::string(option);
+      return false;
+    }
+  } catch (const std::exception&) {
+    error = "Invalid integer value for " + std::string(option);
+    return false;
+  }
+
+  ++index;
+  return true;
+}
+
+bool ReadInt32(std::span<const std::string> args, std::size_t& index, std::string_view option,
+               int32_t& value, std::string& error) {
+  int64_t parsed_value = 0;
+
+  if (!ReadInt64(args, index, option, parsed_value, error)) {
+    return false;
+  }
+
+  if (parsed_value < INT32_MIN || parsed_value > INT32_MAX) {
+    error = "Value for " + std::string(option) + " is out of int32 range";
+    return false;
+  }
+
+  value = static_cast<int32_t>(parsed_value);
+  return true;
+}
+
+bool ReadSize(std::span<const std::string> args, std::size_t& index, std::string_view option,
+              std::size_t& value, std::string& error) {
+  int64_t parsed_value = 0;
+
+  if (!ReadInt64(args, index, option, parsed_value, error)) {
+    return false;
+  }
+
+  if (parsed_value < 0) {
+    error = "Value for " + std::string(option) + " must be non-negative";
+    return false;
+  }
+
+  value = static_cast<std::size_t>(parsed_value);
+  return true;
+}
+
 }  // namespace
 
 CommandHandler::CommandHandler(TaskManager& task_manager, TaskStorage& storage,
@@ -149,6 +209,7 @@ std::string CommandHandler::HandleAdd(const Command& command) {
     return "Usage: add [type] <title> [options]";
   }
 
+  std::string error;
   AddTaskOptions options;
   std::vector<std::string> title_parts;
 
@@ -186,52 +247,52 @@ std::string CommandHandler::HandleAdd(const Command& command) {
     }
 
     if (args[i] == "--seconds") {
-      if (i + 1 >= args.size()) {
-        return "Missing value for --seconds";
+      int64_t value = 0;
+      if (!ReadInt64(args, i, "--seconds", value, error)) {
+        return error;
       }
 
-      options.seconds_left = std::stoll(args[i + 1]);
-      ++i;
+      options.seconds_left = value;
       continue;
     }
 
     if (args[i] == "--interval") {
-      if (i + 1 >= args.size()) {
-        return "Missing value for --interval";
+      int64_t value = 0;
+      if (!ReadInt64(args, i, "--interval", value, error)) {
+        return error;
       }
 
-      options.repeat_interval_seconds = std::stoll(args[i + 1]);
-      ++i;
+      options.repeat_interval_seconds = value;
       continue;
     }
 
     if (args[i] == "--repeats") {
-      if (i + 1 >= args.size()) {
-        return "Missing value for --repeats";
+      int32_t value = 0;
+      if (!ReadInt32(args, i, "--repeats", value, error)) {
+        return error;
       }
 
-      options.repeats_left = std::stoi(args[i + 1]);
-      ++i;
+      options.repeats_left = value;
       continue;
     }
 
     if (args[i] == "--current") {
-      if (i + 1 >= args.size()) {
-        return "Missing value for --current";
+      int64_t value = 0;
+      if (!ReadInt64(args, i, "--current", value, error)) {
+        return error;
       }
 
-      options.current_value = std::stoll(args[i + 1]);
-      ++i;
+      options.current_value = value;
       continue;
     }
 
     if (args[i] == "--target") {
-      if (i + 1 >= args.size()) {
-        return "Missing value for --target";
+      int64_t value = 0;
+      if (!ReadInt64(args, i, "--target", value, error)) {
+        return error;
       }
 
-      options.target_value = std::stoll(args[i + 1]);
-      ++i;
+      options.target_value = value;
       continue;
     }
 
@@ -246,12 +307,12 @@ std::string CommandHandler::HandleAdd(const Command& command) {
     }
 
     if (args[i] == "--current-step") {
-      if (i + 1 >= args.size()) {
-        return "Missing value for --current-step";
+      std::size_t value = 0;
+      if (!ReadSize(args, i, "--current-step", value, error)) {
+        return error;
       }
 
-      options.current_step = static_cast<std::size_t>(std::stoull(args[i + 1]));
-      ++i;
+      options.current_step = value;
       continue;
     }
 
@@ -274,7 +335,6 @@ std::string CommandHandler::HandleAdd(const Command& command) {
 
   options.title = JoinArgs(title_parts);
 
-  std::string error;
   std::unique_ptr<TaskBase> task = CreateTaskFromAddOptions(next_id_, std::move(options), error);
 
   if (task == nullptr) {
