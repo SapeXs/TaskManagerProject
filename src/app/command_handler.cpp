@@ -124,6 +124,61 @@ bool ReadSize(std::span<const std::string> args, std::size_t& index, std::string
   return true;
 }
 
+bool ReadTaskId(std::span<const std::string> args, int32_t& id, std::string& error) {
+  if (args.empty()) {
+    error = "Missing task id";
+    return false;
+  }
+
+  try {
+    std::size_t parsed_chars = 0;
+    id = std::stoi(args[0], &parsed_chars);
+
+    if (parsed_chars != args[0].size()) {
+      error = "Invalid task id";
+      return false;
+    }
+  } catch (const std::exception&) {
+    error = "Invalid task id";
+    return false;
+  }
+
+  return true;
+}
+
+bool ReadInt64Value(const std::string& text, int64_t& value, std::string& error) {
+  try {
+    std::size_t parsed_chars = 0;
+    value = std::stoll(text, &parsed_chars);
+
+    if (parsed_chars != text.size()) {
+      error = "Invalid integer value";
+      return false;
+    }
+  } catch (const std::exception&) {
+    error = "Invalid integer value";
+    return false;
+  }
+
+  return true;
+}
+
+bool ReadInt32Value(const std::string& text, int32_t& value, std::string& error) {
+  int64_t parsed_value = 0;
+
+  if (!ReadInt64Value(text, parsed_value, error)) {
+    return false;
+  }
+
+  if (parsed_value < INT32_MIN || parsed_value > INT32_MAX) {
+    error = "Integer value is out of int32 range";
+    return false;
+  }
+
+  value = static_cast<int32_t>(parsed_value);
+  return true;
+}
+
 }  // namespace
 
 CommandHandler::CommandHandler(TaskManager& task_manager, TaskStorage& storage,
@@ -148,6 +203,30 @@ std::string CommandHandler::Handle(const Command& command) {
       return HandleHelp();
     case CommandType::kClear:
       return HandleClear();
+    case CommandType::kSetTitle:
+      return HandleSetTitle(command);
+    case CommandType::kSetDescription:
+      return HandleSetDescription(command);
+    case CommandType::kSetPriority:
+      return HandleSetPriority(command);
+    case CommandType::kAddTag:
+      return HandleAddTag(command);
+    case CommandType::kRemoveTag:
+      return HandleRemoveTag(command);
+    case CommandType::kSetTime:
+      return HandleSetTime(command);
+    case CommandType::kSetInterval:
+      return HandleSetInterval(command);
+    case CommandType::kSetRepeats:
+      return HandleSetRepeats(command);
+    case CommandType::kAddValue:
+      return HandleAddValue(command);
+    case CommandType::kAdvance:
+      return HandleAdvance(command);
+    case CommandType::kOverdue:
+      return HandleOverdue(command);
+    case CommandType::kReset:
+      return HandleReset(command);
     default:
       return "Unknown command";
   }
@@ -430,4 +509,358 @@ std::string CommandHandler::HandleClear() {
   }
 
   return "All tasks cleared";
+}
+
+std::string CommandHandler::HandleSetTitle(const Command& command) {
+  if (command.GetArgs().size() < 2) {
+    return "Usage: set-title <id> <new title>";
+  }
+
+  std::string error;
+  int32_t id = 0;
+
+  if (!ReadTaskId(command.GetArgs(), id, error)) {
+    return error;
+  }
+
+  std::vector<std::string> title_parts(command.GetArgs().begin() + 1, command.GetArgs().end());
+  std::string title = JoinArgs(title_parts);
+
+  std::lock_guard lock(task_mutex_);
+  TaskBase* task = task_manager_.FindTaskById(id);
+
+  if (task == nullptr) {
+    return "Task not found";
+  }
+
+  task->SetTitle(std::move(title));
+  return "Title updated";
+}
+
+std::string CommandHandler::HandleSetDescription(const Command& command) {
+  if (command.GetArgs().size() < 2) {
+    return "Usage: set-description <id> <new description>";
+  }
+
+  std::string error;
+  int32_t id = 0;
+
+  if (!ReadTaskId(command.GetArgs(), id, error)) {
+    return error;
+  }
+
+  std::vector<std::string> description_parts(command.GetArgs().begin() + 1,
+                                             command.GetArgs().end());
+  std::string description = JoinArgs(description_parts);
+
+  std::lock_guard lock(task_mutex_);
+  TaskBase* task = task_manager_.FindTaskById(id);
+
+  if (task == nullptr) {
+    return "Task not found";
+  }
+
+  task->SetDescription(std::move(description));
+  return "Description updated";
+}
+
+std::string CommandHandler::HandleSetPriority(const Command& command) {
+  if (command.GetArgs().size() != 2) {
+    return "Usage: set-priority <id> <low|medium|high|critical>";
+  }
+
+  std::string error;
+  int32_t id = 0;
+
+  if (!ReadTaskId(command.GetArgs(), id, error)) {
+    return error;
+  }
+
+  TaskPriority priority;
+
+  if (!ParseTaskPriority(command.GetArgs()[1], priority)) {
+    return "Invalid priority. Available: low, medium, high, critical";
+  }
+
+  std::lock_guard lock(task_mutex_);
+  TaskBase* task = task_manager_.FindTaskById(id);
+
+  if (task == nullptr) {
+    return "Task not found";
+  }
+
+  task->SetPriority(priority);
+  return "Priority updated";
+}
+
+std::string CommandHandler::HandleAddTag(const Command& command) {
+  if (command.GetArgs().size() != 2) {
+    return "Usage: add-tag <id> <tag>";
+  }
+
+  std::string error;
+  int32_t id = 0;
+
+  if (!ReadTaskId(command.GetArgs(), id, error)) {
+    return error;
+  }
+
+  std::lock_guard lock(task_mutex_);
+  TaskBase* task = task_manager_.FindTaskById(id);
+
+  if (task == nullptr) {
+    return "Task not found";
+  }
+
+  task->AddTag(command.GetArgs()[1]);
+  return "Tag added";
+}
+
+std::string CommandHandler::HandleRemoveTag(const Command& command) {
+  if (command.GetArgs().size() != 2) {
+    return "Usage: remove-tag <id> <tag>";
+  }
+
+  std::string error;
+  int32_t id = 0;
+
+  if (!ReadTaskId(command.GetArgs(), id, error)) {
+    return error;
+  }
+
+  std::lock_guard lock(task_mutex_);
+  TaskBase* task = task_manager_.FindTaskById(id);
+
+  if (task == nullptr) {
+    return "Task not found";
+  }
+
+  task->RemoveTag(command.GetArgs()[1]);
+  return "Tag removed";
+}
+
+std::string CommandHandler::HandleSetTime(const Command& command) {
+  if (command.GetArgs().size() != 2) {
+    return "Usage: set-time <id> <seconds>";
+  }
+
+  std::string error;
+  int32_t id = 0;
+  int64_t seconds = 0;
+
+  if (!ReadTaskId(command.GetArgs(), id, error)) {
+    return error;
+  }
+
+  if (!ReadInt64Value(command.GetArgs()[1], seconds, error)) {
+    return error;
+  }
+
+  std::lock_guard lock(task_mutex_);
+  TaskBase* task = task_manager_.FindTaskById(id);
+
+  if (task == nullptr) {
+    return "Task not found";
+  }
+
+  if (auto* reminder = dynamic_cast<ReminderTask*>(task); reminder != nullptr) {
+    reminder->SetSecondsLeft(seconds);
+    return "Time updated";
+  }
+
+  if (auto* recurring = dynamic_cast<RecurringTask*>(task); recurring != nullptr) {
+    recurring->SetSecondsLeft(seconds);
+    return "Time updated";
+  }
+
+  return "This task type does not support time";
+}
+
+std::string CommandHandler::HandleSetInterval(const Command& command) {
+  if (command.GetArgs().size() != 2) {
+    return "Usage: set-interval <id> <seconds>";
+  }
+
+  std::string error;
+  int32_t id = 0;
+  int64_t interval = 0;
+
+  if (!ReadTaskId(command.GetArgs(), id, error)) {
+    return error;
+  }
+
+  if (!ReadInt64Value(command.GetArgs()[1], interval, error)) {
+    return error;
+  }
+
+  std::lock_guard lock(task_mutex_);
+  TaskBase* task = task_manager_.FindTaskById(id);
+
+  if (task == nullptr) {
+    return "Task not found";
+  }
+
+  auto* recurring = dynamic_cast<RecurringTask*>(task);
+
+  if (recurring == nullptr) {
+    return "This task type does not support interval";
+  }
+
+  recurring->SetRepeatIntervalSeconds(interval);
+  return "Interval updated";
+}
+
+std::string CommandHandler::HandleSetRepeats(const Command& command) {
+  if (command.GetArgs().size() != 2) {
+    return "Usage: set-repeats <id> <count>";
+  }
+
+  std::string error;
+  int32_t id = 0;
+  int32_t repeats = 0;
+
+  if (!ReadTaskId(command.GetArgs(), id, error)) {
+    return error;
+  }
+
+  if (!ReadInt32Value(command.GetArgs()[1], repeats, error)) {
+    return error;
+  }
+
+  std::lock_guard lock(task_mutex_);
+  TaskBase* task = task_manager_.FindTaskById(id);
+
+  if (task == nullptr) {
+    return "Task not found";
+  }
+
+  auto* bounded = dynamic_cast<BoundedRecurringTask*>(task);
+
+  if (bounded == nullptr) {
+    return "This task type does not support repeats";
+  }
+
+  bounded->SetRepeatsLeft(repeats);
+  return "Repeats updated";
+}
+
+std::string CommandHandler::HandleAddValue(const Command& command) {
+  if (command.GetArgs().size() != 2) {
+    return "Usage: add-value <id> <value>";
+  }
+
+  std::string error;
+  int32_t id = 0;
+  int64_t value = 0;
+
+  if (!ReadTaskId(command.GetArgs(), id, error)) {
+    return error;
+  }
+
+  if (!ReadInt64Value(command.GetArgs()[1], value, error)) {
+    return error;
+  }
+
+  std::lock_guard lock(task_mutex_);
+  TaskBase* task = task_manager_.FindTaskById(id);
+
+  if (task == nullptr) {
+    return "Task not found";
+  }
+
+  auto* savings = dynamic_cast<SavingsTask*>(task);
+
+  if (savings == nullptr) {
+    return "This task type does not support value progress";
+  }
+
+  savings->AddValue(value);
+  return "Value updated";
+}
+
+std::string CommandHandler::HandleAdvance(const Command& command) {
+  if (command.GetArgs().size() != 1) {
+    return "Usage: advance <id>";
+  }
+
+  std::string error;
+  int32_t id = 0;
+
+  if (!ReadTaskId(command.GetArgs(), id, error)) {
+    return error;
+  }
+
+  std::lock_guard lock(task_mutex_);
+  TaskBase* task = task_manager_.FindTaskById(id);
+
+  if (task == nullptr) {
+    return "Task not found";
+  }
+
+  auto* stepped = dynamic_cast<SteppedDeadlineTask*>(task);
+
+  if (stepped == nullptr) {
+    return "This task type does not support steps";
+  }
+
+  stepped->AdvanceStep();
+  return "Step advanced";
+}
+
+std::string CommandHandler::HandleOverdue(const Command& command) {
+  if (command.GetArgs().size() != 1) {
+    return "Usage: overdue <id>";
+  }
+
+  std::string error;
+  int32_t id = 0;
+
+  if (!ReadTaskId(command.GetArgs(), id, error)) {
+    return error;
+  }
+
+  std::lock_guard lock(task_mutex_);
+  TaskBase* task = task_manager_.FindTaskById(id);
+
+  if (task == nullptr) {
+    return "Task not found";
+  }
+
+  auto* stepped = dynamic_cast<SteppedDeadlineTask*>(task);
+
+  if (stepped == nullptr) {
+    return "This task type does not support overdue state";
+  }
+
+  stepped->SetOverdue();
+  return "Task marked overdue";
+}
+
+std::string CommandHandler::HandleReset(const Command& command) {
+  if (command.GetArgs().size() != 1) {
+    return "Usage: reset <id>";
+  }
+
+  std::string error;
+  int32_t id = 0;
+
+  if (!ReadTaskId(command.GetArgs(), id, error)) {
+    return error;
+  }
+
+  std::lock_guard lock(task_mutex_);
+  TaskBase* task = task_manager_.FindTaskById(id);
+
+  if (task == nullptr) {
+    return "Task not found";
+  }
+
+  auto* recurring = dynamic_cast<RecurringTask*>(task);
+
+  if (recurring == nullptr) {
+    return "This task type does not support reset";
+  }
+
+  recurring->ResetToNextOccurrence();
+  return "Task reset to next occurrence";
 }
