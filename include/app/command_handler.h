@@ -24,6 +24,18 @@ class CommandHandler {
   std::string HandleSave();
   std::string HandleClear();
   std::string HandleHelp();
+  std::string HandleSetTitle(const Command& command);
+  std::string HandleSetDescription(const Command& command);
+  std::string HandleSetPriority(const Command& command);
+  std::string HandleAddTag(const Command& command);
+  std::string HandleRemoveTag(const Command& command);
+  std::string HandleSetTime(const Command& command);
+  std::string HandleSetInterval(const Command& command);
+  std::string HandleSetRepeats(const Command& command);
+  std::string HandleAddValue(const Command& command);
+  std::string HandleAdvance(const Command& command);
+  std::string HandleOverdue(const Command& command);
+  std::string HandleReset(const Command& command);
 
   TaskManager& task_manager_;
   TaskStorage& storage_;

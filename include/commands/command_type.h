@@ -10,5 +10,19 @@ enum class CommandType {
   kExit,
   kSave,
   kClear,
+
+  kSetTitle,
+  kSetDescription,
+  kSetPriority,
+  kAddTag,
+  kRemoveTag,
+  kSetTime,
+  kSetInterval,
+  kSetRepeats,
+  kAddValue,
+  kAdvance,
+  kOverdue,
+  kReset,
+
   kInvalid,
 };
