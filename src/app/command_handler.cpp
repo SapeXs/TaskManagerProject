@@ -102,6 +102,8 @@ std::string CommandHandler::Handle(const Command& command) {
       return HandleSave();
     case CommandType::kHelp:
       return HandleHelp();
+    case CommandType::kClear:
+      return HandleClear();
     default:
       return "Unknown command";
   }
@@ -269,4 +271,15 @@ std::string CommandHandler::HandleSave() {
 
 std::string CommandHandler::HandleHelp() {
   return TaskFormatter::FormatHelp();
+}
+
+std::string CommandHandler::HandleClear() {
+  {
+    std::lock_guard lock(task_mutex_);
+    task_manager_.Clear();
+    storage_.Save(task_manager_);
+    next_id_ = 1;
+  }
+
+  return "All tasks cleared";
 }

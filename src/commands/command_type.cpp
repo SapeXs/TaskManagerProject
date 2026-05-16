@@ -20,6 +20,8 @@ std::string_view ToString(CommandType type) {
       return "exit";
     case CommandType::kSave:
       return "save";
+    case CommandType::kClear:
+      return "clear";
     default:
       return "invalid";
   }

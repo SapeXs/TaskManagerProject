@@ -111,6 +111,7 @@ std::string TaskFormatter::FormatHelp() {
          "overdue, scheduled\n"
          "  filter tag <value>             - filter by tag\n"
          "  remove <id>      - remove task by id\n"
+         "  clear                                       - remove all tasks\n"
          "  save             - save tasks to storage\n"
          "  help             - show this help";
 }

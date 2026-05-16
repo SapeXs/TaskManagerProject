@@ -9,7 +9,9 @@ const std::unordered_map<std::string, CommandType> kCommandMap = {
     {"add", CommandType::kAdd},       {"list", CommandType::kList},
     {"find", CommandType::kFind},     {"remove", CommandType::kRemove},
     {"filter", CommandType::kFilter}, {"help", CommandType::kHelp},
-    {"exit", CommandType::kExit},     {"save", CommandType::kSave}};
+    {"exit", CommandType::kExit},     {"save", CommandType::kSave},
+    {"clear", CommandType::kClear},
+};
 }
 
 std::vector<std::string> CommandParser::Split_(const std::string& input) const {
