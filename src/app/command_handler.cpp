@@ -7,7 +7,8 @@
 #include <utility>
 #include <vector>
 
-#include "tasks/reminder_task.h"
+#include "storage/task_constructor.h"
+#include "tasks/tasks_lib.h"
 
 #include "format/task_formatter.h"
 
@@ -80,6 +81,40 @@ bool ParseStateArg(const std::string& value, TaskState& state) {
   return false;
 }
 
+bool ParseTaskType(const std::string& value, AddTaskType& type) {
+  if (value == "reminder") {
+    type = AddTaskType::kReminder;
+    return true;
+  }
+
+  if (value == "recurring") {
+    type = AddTaskType::kRecurring;
+    return true;
+  }
+
+  if (value == "bounded" || value == "bounded-recurring") {
+    type = AddTaskType::kBoundedRecurring;
+    return true;
+  }
+
+  if (value == "savings") {
+    type = AddTaskType::kSavings;
+    return true;
+  }
+
+  if (value == "stepped") {
+    type = AddTaskType::kSteppedDeadline;
+    return true;
+  }
+
+  if (value == "final") {
+    type = AddTaskType::kFinalDeadline;
+    return true;
+  }
+
+  return false;
+}
+
 }  // namespace
 
 CommandHandler::CommandHandler(TaskManager& task_manager, TaskStorage& storage,
@@ -111,22 +146,28 @@ std::string CommandHandler::Handle(const Command& command) {
 
 std::string CommandHandler::HandleAdd(const Command& command) {
   if (command.GetArgs().empty()) {
-    return "Missing title";
+    return "Usage: add [type] <title> [options]";
   }
 
+  AddTaskOptions options;
   std::vector<std::string> title_parts;
-  TaskPriority priority = TaskPriority::kMediumPriority;
-  TaskBase::TagContainer tags;
 
   auto args = command.GetArgs();
+  std::size_t start = 0;
 
-  for (std::size_t i = 0; i < args.size(); ++i) {
+  AddTaskType parsed_type;
+  if (ParseTaskType(args[0], parsed_type)) {
+    options.type = parsed_type;
+    start = 1;
+  }
+
+  for (std::size_t i = start; i < args.size(); ++i) {
     if (args[i] == "--priority") {
       if (i + 1 >= args.size()) {
         return "Missing priority value";
       }
 
-      if (!ParsePriorityArg(args[i + 1], priority)) {
+      if (!ParsePriorityArg(args[i + 1], options.priority)) {
         return "Invalid priority. Available: low, medium, high, critical";
       }
 
@@ -139,7 +180,87 @@ std::string CommandHandler::HandleAdd(const Command& command) {
         return "Missing tag value";
       }
 
-      tags.insert(args[i + 1]);
+      options.tags.insert(args[i + 1]);
+      ++i;
+      continue;
+    }
+
+    if (args[i] == "--seconds") {
+      if (i + 1 >= args.size()) {
+        return "Missing value for --seconds";
+      }
+
+      options.seconds_left = std::stoll(args[i + 1]);
+      ++i;
+      continue;
+    }
+
+    if (args[i] == "--interval") {
+      if (i + 1 >= args.size()) {
+        return "Missing value for --interval";
+      }
+
+      options.repeat_interval_seconds = std::stoll(args[i + 1]);
+      ++i;
+      continue;
+    }
+
+    if (args[i] == "--repeats") {
+      if (i + 1 >= args.size()) {
+        return "Missing value for --repeats";
+      }
+
+      options.repeats_left = std::stoi(args[i + 1]);
+      ++i;
+      continue;
+    }
+
+    if (args[i] == "--current") {
+      if (i + 1 >= args.size()) {
+        return "Missing value for --current";
+      }
+
+      options.current_value = std::stoll(args[i + 1]);
+      ++i;
+      continue;
+    }
+
+    if (args[i] == "--target") {
+      if (i + 1 >= args.size()) {
+        return "Missing value for --target";
+      }
+
+      options.target_value = std::stoll(args[i + 1]);
+      ++i;
+      continue;
+    }
+
+    if (args[i] == "--step") {
+      if (i + 1 >= args.size()) {
+        return "Missing step text";
+      }
+
+      options.step_texts.push_back(args[i + 1]);
+      ++i;
+      continue;
+    }
+
+    if (args[i] == "--current-step") {
+      if (i + 1 >= args.size()) {
+        return "Missing value for --current-step";
+      }
+
+      options.current_step = static_cast<std::size_t>(std::stoull(args[i + 1]));
+      ++i;
+      continue;
+    }
+
+    if (args[i] == "--final") {
+      if (i + 1 >= args.size()) {
+        return "Missing final deadline text";
+      }
+
+      options.final_deadline_text = args[i + 1];
       ++i;
       continue;
     }
@@ -151,10 +272,16 @@ std::string CommandHandler::HandleAdd(const Command& command) {
     return "Missing title";
   }
 
-  std::string title = JoinArgs(title_parts);
+  options.title = JoinArgs(title_parts);
 
-  auto task = std::make_unique<ReminderTask>(next_id_++, std::move(title), "", priority,
-                                             std::move(tags), 0);
+  std::string error;
+  std::unique_ptr<TaskBase> task = CreateTaskFromAddOptions(next_id_, std::move(options), error);
+
+  if (task == nullptr) {
+    return error;
+  }
+
+  ++next_id_;
 
   {
     std::lock_guard lock(task_mutex_);
