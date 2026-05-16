@@ -62,3 +62,69 @@ std::unique_ptr<TaskBase> CreateTaskFromStorageFields(const std::vector<std::str
 
   return nullptr;
 }
+
+std::unique_ptr<TaskBase> CreateTaskFromAddOptions(int32_t id, AddTaskOptions options,
+                                                   std::string& error) {
+  switch (options.type) {
+    case AddTaskType::kReminder:
+      return std::make_unique<ReminderTask>(
+          id, std::move(options.title), std::move(options.description), options.priority,
+          std::move(options.tags), options.seconds_left.value_or(0));
+
+    case AddTaskType::kRecurring:
+      if (!options.seconds_left.has_value() || !options.repeat_interval_seconds.has_value()) {
+        error = "Usage: add recurring <title> --seconds <value> --interval <value>";
+        return nullptr;
+      }
+
+      return std::make_unique<RecurringTask>(
+          id, std::move(options.title), std::move(options.description), options.priority,
+          std::move(options.tags), *options.seconds_left, *options.repeat_interval_seconds);
+
+    case AddTaskType::kBoundedRecurring:
+      if (!options.seconds_left.has_value() || !options.repeat_interval_seconds.has_value() ||
+          !options.repeats_left.has_value()) {
+        error = "Usage: add bounded <title> --seconds <value> --interval <value> --repeats <value>";
+        return nullptr;
+      }
+
+      return std::make_unique<BoundedRecurringTask>(
+          id, std::move(options.title), std::move(options.description), options.priority,
+          std::move(options.tags), *options.seconds_left, *options.repeat_interval_seconds,
+          *options.repeats_left);
+
+    case AddTaskType::kSavings:
+      if (!options.current_value.has_value() || !options.target_value.has_value()) {
+        error = "Usage: add savings <title> --current <value> --target <value>";
+        return nullptr;
+      }
+
+      return std::make_unique<SavingsTask>(
+          id, std::move(options.title), std::move(options.description), options.priority,
+          std::move(options.tags), *options.current_value, *options.target_value);
+
+    case AddTaskType::kSteppedDeadline:
+      if (options.step_texts.empty()) {
+        error = "Usage: add stepped <title> --step <text> [--step <text> ...]";
+        return nullptr;
+      }
+
+      return std::make_unique<SteppedDeadlineTask>(
+          id, std::move(options.title), std::move(options.description), options.priority,
+          std::move(options.tags), std::move(options.step_texts), options.current_step.value_or(0));
+
+    case AddTaskType::kFinalDeadline:
+      if (options.step_texts.empty() || !options.final_deadline_text.has_value()) {
+        error = "Usage: add final <title> --step <text> [--step <text> ...] --final <text>";
+        return nullptr;
+      }
+
+      return std::make_unique<FinalDeadlineTask>(
+          id, std::move(options.title), std::move(options.description), options.priority,
+          std::move(options.tags), std::move(options.step_texts),
+          std::move(*options.final_deadline_text), options.current_step.value_or(0));
+  }
+
+  error = "Unknown task type";
+  return nullptr;
+}
