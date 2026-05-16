@@ -5,6 +5,7 @@
 #include <memory>
 #include <utility>
 
+#include "core/task_converters.h"
 #include "storage/storage_codec.h"
 #include "storage/task_constructor.h"
 
@@ -22,7 +23,7 @@ void TaskStorage::Save(const TaskManager& manager) {
     file << EscapeStorageField(std::string(task->GetTypeName())) << '|' << task->GetId() << '|'
          << EscapeStorageField(task->GetTitle()) << '|'
          << EscapeStorageField(task->GetDescription()) << '|'
-         << static_cast<int>(task->GetPriority()) << '|'
+         << TaskPriorityToStorageValue(task->GetPriority()) << '|'
          << EscapeStorageField(TagsToStorageString(task->GetTags()));
 
     for (const std::string& field : task->GetStorageFields()) {
