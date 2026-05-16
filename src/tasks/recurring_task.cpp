@@ -29,6 +29,10 @@ void RecurringTask::ResetToNextOccurrence() noexcept {
   GetProgress().SetSecondsLeft(repeat_interval_seconds_);
 }
 
+void RecurringTask::SetRepeatIntervalSeconds(int64_t repeat_interval_seconds) noexcept {
+  repeat_interval_seconds_ = repeat_interval_seconds;
+}
+
 std::vector<std::string> RecurringTask::GetStorageFields() const {
   return {std::to_string(GetSecondsLeft()), std::to_string(GetRepeatIntervalSeconds())};
 }

@@ -19,6 +19,7 @@ class RecurringTask : public TaskWithProgress<TimeLeftProgress> {
   int64_t GetSecondsLeft() const noexcept;
   int64_t GetRepeatIntervalSeconds() const noexcept;
   void SetSecondsLeft(int64_t seconds_left) noexcept;
+  void SetRepeatIntervalSeconds(int64_t repeat_interval_seconds) noexcept;
   void ResetToNextOccurrence() noexcept;
 
   std::vector<std::string> GetStorageFields() const override;
