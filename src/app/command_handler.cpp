@@ -547,13 +547,13 @@ std::string CommandHandler::HandleRemoveTag(const Command& command) {
 
 std::string CommandHandler::HandleSetTime(const Command& command) {
   if (command.GetArgs().size() != 2)
-    return "Usage: set-time <id> <seconds>";
+    return "Usage: set-time <id> <duration>";
   std::string error;
   int32_t id = 0;
   int64_t seconds = 0;
   if (!ReadTaskId(command.GetArgs(), id, error))
     return error;
-  if (!ReadInt64Value(command.GetArgs()[1], seconds, error))
+  if (!TryParseDuration(command.GetArgs()[1], seconds, error))
     return error;
 
   std::lock_guard lock(task_mutex_);
@@ -574,13 +574,13 @@ std::string CommandHandler::HandleSetTime(const Command& command) {
 
 std::string CommandHandler::HandleSetInterval(const Command& command) {
   if (command.GetArgs().size() != 2)
-    return "Usage: set-interval <id> <seconds>";
+    return "Usage: set-interval <id> <duration>";
   std::string error;
   int32_t id = 0;
   int64_t interval = 0;
   if (!ReadTaskId(command.GetArgs(), id, error))
     return error;
-  if (!ReadInt64Value(command.GetArgs()[1], interval, error))
+  if (!TryParseDuration(command.GetArgs()[1], interval, error))
     return error;
 
   std::lock_guard lock(task_mutex_);
