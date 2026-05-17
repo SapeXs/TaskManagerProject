@@ -78,20 +78,24 @@ Usage:
   taskctl <command> [arguments]
 
 Task creation:
-  add reminder <title> [--time duration] [--priority value] [--tag value]
+  add reminder <title> [--at datetime | --date date | --time duration] [--priority value] [--tag value]
       Create a simple reminder task.
-      Example:
+      Examples:
         taskctl add reminder "Read book" --time 30m --priority high --tag study
+        taskctl add reminder "Read book" --at "2026-05-20 18:30"
+        taskctl add reminder "Submit report" --date "2026-05-25"
 
-  add recurring <title> --time duration --interval duration [--priority value] [--tag value]
+  add recurring <title> [--at datetime | --time duration] --interval duration [--priority value] [--tag value]
       Create a task that repeats after every interval.
-      Example:
+      Examples:
         taskctl add recurring "Water plants" --time 1h --interval 1d --tag home
+        taskctl add recurring "Water plants" --at "2026-05-18 10:00" --interval 1d
 
-  add bounded <title> --time duration --interval duration --repeats n [--priority value] [--tag value]
+  add bounded <title> [--at datetime | --time duration] --interval duration --repeats n [--priority value] [--tag value]
       Create a recurring task with limited number of repeats.
-      Example:
+      Examples:
         taskctl add bounded "Gym" --time 2h --interval 1w --repeats 10 --tag health
+        taskctl add bounded "Gym" --at "2026-05-19 19:00" --interval 1w --repeats 10
 
   add savings <title> --current n --target n [--priority value] [--tag value]
       Create a savings/progress task.
@@ -160,6 +164,21 @@ General task editing:
         taskctl remove-tag 3 study
 
 Progress and type-specific editing:
+  set-deadline <id> <datetime>
+      Set exact calendar deadline for a task.
+      Example:
+        taskctl set-deadline 3 "2026-06-01 23:59"
+
+  set-date <id> <date>
+      Set date deadline (time will be 23:59:59).
+      Example:
+        taskctl set-date 3 "2026-06-01"
+
+  set-remind-before <id> <duration>
+      Set how much time before deadline to send a reminder.
+      Example:
+        taskctl set-remind-before 3 30m
+
   set-time <id> <duration>
       Change time left for reminder or recurring task.
       Example:
@@ -211,6 +230,11 @@ Managing:
       Show this help message.
 
 Hints:
+  Date/time examples:
+    2026-05-20
+    2026-05-20 18:30
+    2026-05-20 18:30:00
+
   Duration examples:
     30s  = 30 seconds
     10m  = 10 minutes
@@ -236,13 +260,14 @@ Hints:
     Use quotes:
       taskctl add reminder "Read big book" --tag "very important"
       taskctl set-title 3 "Read advanced C++ book"
+      taskctl set-deadline 3 "2026-06-01 23:59"
 
   Default behavior:
     If task type is omitted, reminder is used.
     If priority is omitted, medium is used.
 
   Notes:
-    set-time works only for reminder, recurring and bounded recurring tasks.
+    set-deadline, set-date, set-time work only for reminder, recurring and bounded recurring tasks.
     set-interval and reset work only for recurring and bounded recurring tasks.
     set-repeats works only for bounded recurring tasks.
     add-value works only for savings tasks.

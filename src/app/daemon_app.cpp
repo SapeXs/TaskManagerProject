@@ -38,6 +38,9 @@ void DaemonApp::Run() {
   autosave_thread_ = std::jthread(
       [this](std::stop_token stop_token) { AutosaveLoop(stop_token); });
 
+  deadline_thread_ = std::jthread(
+      [this](std::stop_token stop_token) { DeadlineLoop(stop_token); });
+
   std::cout << "TaskManager daemon started\n";
 
   while (running_) {
@@ -58,9 +61,11 @@ void DaemonApp::Run() {
 
     std::cout << "Received: " << message << '\n';
   }
-
   autosave_thread_.request_stop();
+  deadline_thread_.request_stop();
+
   autosave_thread_.join();
+  deadline_thread_.join();
 
   {
     std::lock_guard lock(task_mutex_);
@@ -72,22 +77,46 @@ void DaemonApp::Run() {
 
 void DaemonApp::Stop() {
   running_ = false;
-
   socket_server_.Shutdown();
-
   notification_service_.Notify("TaskManager", "Daemon stopped");
 }
 
 void DaemonApp::AutosaveLoop(std::stop_token stop_token) {
   while (!stop_token.stop_requested()) {
     std::this_thread::sleep_for(autosave_interval_);
+    if (stop_token.stop_requested()) break;
 
     {
       std::lock_guard lock(task_mutex_);
-
       std::cout << "Autosave...\n";
-
       storage_.Save(task_manager_);
+    }
+  }
+}
+
+void DaemonApp::DeadlineLoop(std::stop_token stop_token) {
+  const auto check_interval = std::chrono::seconds(10);
+
+  while (!stop_token.stop_requested()) {
+    std::this_thread::sleep_for(check_interval);
+    if (stop_token.stop_requested()) break;
+
+    {
+      std::lock_guard lock(task_mutex_);
+      for (const TaskBase* task : task_manager_.GetAllTasks()) {
+        if (task == nullptr) continue;
+
+        if (task->GetState() == TaskState::kOverdue) {
+          if (notified_tasks_.find(task->GetId()) == notified_tasks_.end()) {
+            notification_service_.Notify("Deadline Passed!", "Task: " + task->GetTitle());
+
+            notified_tasks_.insert(task->GetId());
+            std::cout << "[DeadlineWatcher] Notified overdue for task ID " << task->GetId() << '\n';
+          }
+        } else {
+          notified_tasks_.erase(task->GetId());
+        }
+      }
     }
   }
 }

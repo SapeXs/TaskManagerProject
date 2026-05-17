@@ -7,6 +7,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(LIBNOTIFY REQUIRED libnotify)
+find_package(Threads REQUIRED)
+
 option(TASKMANAGER_ENABLE_WARNINGS "Enable compiler warnings" ON)
 option(TASKMANAGER_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
@@ -36,6 +40,7 @@ add_library(
   src/core/task_base.cpp
   src/core/task_converters.cpp
   src/core/duration_parser.cpp
+  src/core/date_time_utils.cpp
   src/manager/task_manager.cpp
   src/storage/task_storage.cpp
   src/storage/storage_codec.cpp
@@ -50,6 +55,7 @@ add_library(
   src/commands/command_parser.cpp
   src/commands/command_type.cpp
   src/format/task_formatter.cpp
+  src/progress/time_left_progress.cpp
 )
 
 target_include_directories(task_manager_core PUBLIC include)
@@ -61,10 +67,12 @@ add_executable(
   src/app/daemon_app.cpp
   src/app/command_handler.cpp
   src/ipc/unix_socket_server.cpp
+  src/notifications/notification_service.cpp
 )
 
-target_include_directories(taskmanagerd PRIVATE include)
-target_link_libraries(taskmanagerd PRIVATE task_manager_core task_manager_project_options)
+target_include_directories(taskmanagerd PRIVATE include ${LIBNOTIFY_INCLUDE_DIRS})
+target_link_libraries(taskmanagerd PRIVATE task_manager_core task_manager_project_options Threads::Threads ${LIBNOTIFY_LIBRARIES})
+target_compile_options(taskmanagerd PRIVATE ${LIBNOTIFY_CFLAGS_OTHER})
 
 add_executable(
   taskctl
