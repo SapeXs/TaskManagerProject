@@ -37,6 +37,10 @@ class CommandHandler {
   std::string HandleOverdue(const Command& command);
   std::string HandleReset(const Command& command);
 
+  std::string HandleSetDeadline(const Command& command);
+  std::string HandleSetDate(const Command& command);
+  std::string HandleSetRemindBefore(const Command& command);
+
   TaskManager& task_manager_;
   TaskStorage& storage_;
   std::mutex& task_mutex_;
