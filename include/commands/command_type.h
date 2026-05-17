@@ -23,6 +23,10 @@ enum class CommandType {
   kAdvance,
   kOverdue,
   kReset,
+-
+  kSetDeadline,
+  kSetDate,
+  kSetRemindBefore,
 
   kInvalid,
 };
