@@ -85,7 +85,7 @@ bool ParseTaskState(std::string_view value, TaskState& state) {
   return false;
 }
 
-int8_t TaskPriorityToStorageValue(TaskPriority priority) {
+int16_t TaskPriorityToStorageValue(TaskPriority priority) {
   switch (priority) {
     case TaskPriority::kLowPriority:
       return 0;
@@ -100,7 +100,7 @@ int8_t TaskPriorityToStorageValue(TaskPriority priority) {
   }
 }
 
-TaskPriority TaskPriorityFromStorageValue(int8_t value) {
+TaskPriority TaskPriorityFromStorageValue(int16_t value) {
   switch (value) {
     case 0:
       return TaskPriority::kLowPriority;

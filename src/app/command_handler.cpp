@@ -356,6 +356,7 @@ std::string CommandHandler::HandleAdd(const Command& command) {
   {
     std::lock_guard lock(task_mutex_);
     task_manager_.AddTask(std::move(task));
+    SaveTasksLocked();
   }
 
   return "Task added";
@@ -423,6 +424,7 @@ std::string CommandHandler::HandleRemove(const Command& command) {
     if (task_manager_.FindTaskById(id) == nullptr)
       return "Task not found";
     task_manager_.RemoveTask(id);
+    SaveTasksLocked();
   }
   return "Task removed";
 }
@@ -445,6 +447,7 @@ std::string CommandHandler::HandleClear() {
     task_manager_.Clear();
     storage_.Save(task_manager_);
     next_id_ = 1;
+    SaveTasksLocked();
   }
   return "All tasks cleared";
 }
@@ -466,6 +469,7 @@ std::string CommandHandler::HandleSetTitle(const Command& command) {
     return "Task not found";
 
   task->SetTitle(std::move(title));
+  SaveTasksLocked();
   return "Title updated";
 }
 
@@ -487,6 +491,7 @@ std::string CommandHandler::HandleSetDescription(const Command& command) {
     return "Task not found";
 
   task->SetDescription(std::move(description));
+  SaveTasksLocked();
   return "Description updated";
 }
 
@@ -508,6 +513,7 @@ std::string CommandHandler::HandleSetPriority(const Command& command) {
     return "Task not found";
 
   task->SetPriority(priority);
+  SaveTasksLocked();
   return "Priority updated";
 }
 
@@ -525,6 +531,7 @@ std::string CommandHandler::HandleAddTag(const Command& command) {
     return "Task not found";
 
   task->AddTag(command.GetArgs()[1]);
+  SaveTasksLocked();
   return "Tag added";
 }
 
@@ -542,15 +549,18 @@ std::string CommandHandler::HandleRemoveTag(const Command& command) {
     return "Task not found";
 
   task->RemoveTag(command.GetArgs()[1]);
+  SaveTasksLocked();
   return "Tag removed";
 }
 
 std::string CommandHandler::HandleSetTime(const Command& command) {
   if (command.GetArgs().size() != 2)
     return "Usage: set-time <id> <duration>";
+
   std::string error;
   int32_t id = 0;
   int64_t seconds = 0;
+
   if (!ReadTaskId(command.GetArgs(), id, error))
     return error;
   if (!TryParseDuration(command.GetArgs()[1], seconds, error))
@@ -563,21 +573,27 @@ std::string CommandHandler::HandleSetTime(const Command& command) {
 
   if (auto* reminder = dynamic_cast<ReminderTask*>(task); reminder != nullptr) {
     reminder->SetSecondsLeft(seconds);
+    SaveTasksLocked();
     return "Time updated";
   }
+
   if (auto* recurring = dynamic_cast<RecurringTask*>(task); recurring != nullptr) {
     recurring->SetSecondsLeft(seconds);
+    SaveTasksLocked();
     return "Time updated";
   }
+
   return "This task type does not support time";
 }
 
 std::string CommandHandler::HandleSetInterval(const Command& command) {
   if (command.GetArgs().size() != 2)
     return "Usage: set-interval <id> <duration>";
+
   std::string error;
   int32_t id = 0;
   int64_t interval = 0;
+
   if (!ReadTaskId(command.GetArgs(), id, error))
     return error;
   if (!TryParseDuration(command.GetArgs()[1], interval, error))
@@ -593,6 +609,7 @@ std::string CommandHandler::HandleSetInterval(const Command& command) {
     return "This task type does not support interval";
 
   recurring->SetRepeatIntervalSeconds(interval);
+  SaveTasksLocked();
   return "Interval updated";
 }
 
@@ -617,6 +634,7 @@ std::string CommandHandler::HandleSetRepeats(const Command& command) {
     return "This task type does not support repeats";
 
   bounded->SetRepeatsLeft(repeats);
+  SaveTasksLocked();
   return "Repeats updated";
 }
 
@@ -641,6 +659,7 @@ std::string CommandHandler::HandleAddValue(const Command& command) {
     return "This task type does not support value progress";
 
   savings->AddValue(value);
+  SaveTasksLocked();
   return "Value updated";
 }
 
@@ -662,6 +681,7 @@ std::string CommandHandler::HandleAdvance(const Command& command) {
     return "This task type does not support steps";
 
   stepped->AdvanceStep();
+  SaveTasksLocked();
   return "Step advanced";
 }
 
@@ -683,6 +703,7 @@ std::string CommandHandler::HandleOverdue(const Command& command) {
     return "This task type does not support overdue state";
 
   stepped->SetOverdue();
+  SaveTasksLocked();
   return "Task marked overdue";
 }
 
@@ -704,6 +725,7 @@ std::string CommandHandler::HandleReset(const Command& command) {
     return "This task type does not support reset";
 
   recurring->ResetToNextOccurrence();
+  SaveTasksLocked();
   return "Task reset to next occurrence";
 }
 
@@ -733,7 +755,7 @@ std::string CommandHandler::HandleSetDeadline(const Command& command) {
   } else {
     return "This task type does not support deadline";
   }
-
+  SaveTasksLocked();
   return "Deadline updated";
 }
 
@@ -743,4 +765,8 @@ std::string CommandHandler::HandleSetDate(const Command& command) {
 
 std::string CommandHandler::HandleSetRemindBefore(const Command& /*command*/) {
   return "Remind before updated";
+}
+
+void CommandHandler::SaveTasksLocked() {
+  storage_.Save(task_manager_);
 }

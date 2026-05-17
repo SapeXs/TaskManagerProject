@@ -41,6 +41,8 @@ class CommandHandler {
   std::string HandleSetDate(const Command& command);
   std::string HandleSetRemindBefore(const Command& command);
 
+  void SaveTasksLocked();
+
   TaskManager& task_manager_;
   TaskStorage& storage_;
   std::mutex& task_mutex_;

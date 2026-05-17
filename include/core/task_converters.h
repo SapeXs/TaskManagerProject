@@ -12,5 +12,5 @@ std::string_view TaskStateToString(TaskState state);
 bool ParseTaskPriority(std::string_view value, TaskPriority& priority);
 bool ParseTaskState(std::string_view value, TaskState& state);
 
-int8_t TaskPriorityToStorageValue(TaskPriority priority);
-TaskPriority TaskPriorityFromStorageValue(int8_t value);
+int16_t TaskPriorityToStorageValue(TaskPriority priority);
+TaskPriority TaskPriorityFromStorageValue(int16_t value);
