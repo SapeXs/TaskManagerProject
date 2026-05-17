@@ -1,16 +1,16 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "commands/command.h"
-#include "commands/command_type.h"
 
 class CommandParser {
  public:
-  Command Parse(const std::string& input) const;
+  Command Parse(std::string_view input) const;
 
  private:
-  std::vector<std::string> Split_(const std::string& input) const;
-  CommandType ParseCommandType_(const std::string& command_name) const;
+  std::vector<std::string> Split_(std::string_view input) const;
+  CommandType ParseCommandType_(std::string_view command_name) const;
 };
