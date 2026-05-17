@@ -14,8 +14,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(LIBNOTIFY REQUIRED libnotify)
 find_package(Threads REQUIRED)
 
 option(TASKMANAGER_ENABLE_WARNINGS "Enable compiler warnings" ON)
@@ -78,7 +76,15 @@ add_executable(
 )
 
 target_include_directories(taskmanagerd PRIVATE ${LIBNOTIFY_INCLUDE_DIRS})
-target_link_libraries(taskmanagerd PRIVATE ${LIBNOTIFY_LIBRARIES})
+
+target_link_libraries(taskmanagerd
+    PRIVATE
+        task_manager_core
+        task_manager_project_options
+        Threads::Threads
+        ${LIBNOTIFY_LIBRARIES}
+)
+
 target_compile_options(taskmanagerd PRIVATE ${LIBNOTIFY_CFLAGS_OTHER})
 
 add_executable(
