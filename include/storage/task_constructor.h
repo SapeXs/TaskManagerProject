@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <optional>
@@ -26,7 +27,8 @@ struct AddTaskOptions {
   TaskPriority priority = TaskPriority::kMediumPriority;
   TaskBase::TagContainer tags;
 
-  std::optional<int64_t> seconds_left;
+  std::optional<std::chrono::system_clock::time_point> deadline;
+
   std::optional<int64_t> repeat_interval_seconds;
   std::optional<int32_t> repeats_left;
 

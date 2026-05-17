@@ -1,5 +1,6 @@
 #include "storage/task_constructor.h"
 
+#include <chrono>
 #include <utility>
 
 #include "core/task_name.h"
@@ -19,19 +20,22 @@ std::unique_ptr<TaskBase> CreateTaskFromStorageFields(const std::vector<std::str
   TaskBase::TagContainer tags = ParseStorageTags(fields[5]);
 
   if (type == task_names::kNameReminderTask && fields.size() == 7) {
+    auto deadline = std::chrono::system_clock::from_time_t(std::stoll(fields[6]));
     return std::make_unique<ReminderTask>(id, std::move(title), std::move(description), priority,
-                                          std::move(tags), std::stoll(fields[6]));
+                                          std::move(tags), deadline);
   }
 
   if (type == task_names::kNameRecurringTask && fields.size() == 8) {
+    auto deadline = std::chrono::system_clock::from_time_t(std::stoll(fields[6]));
     return std::make_unique<RecurringTask>(id, std::move(title), std::move(description), priority,
-                                           std::move(tags), std::stoll(fields[6]),
+                                           std::move(tags), deadline,
                                            std::stoll(fields[7]));
   }
 
   if (type == task_names::kNameBoundedRecurringTask && fields.size() == 9) {
+    auto deadline = std::chrono::system_clock::from_time_t(std::stoll(fields[6]));
     return std::make_unique<BoundedRecurringTask>(id, std::move(title), std::move(description),
-                                                  priority, std::move(tags), std::stoll(fields[6]),
+                                                  priority, std::move(tags), deadline,
                                                   std::stoll(fields[7]), std::stoi(fields[8]));
   }
 
@@ -69,28 +73,29 @@ std::unique_ptr<TaskBase> CreateTaskFromAddOptions(int32_t id, AddTaskOptions op
     case AddTaskType::kReminder:
       return std::make_unique<ReminderTask>(
           id, std::move(options.title), std::move(options.description), options.priority,
-          std::move(options.tags), options.seconds_left.value_or(0));
+          std::move(options.tags),
+          options.deadline.value_or(std::chrono::system_clock::now()));
 
     case AddTaskType::kRecurring:
-      if (!options.seconds_left.has_value() || !options.repeat_interval_seconds.has_value()) {
-        error = "Usage: add recurring <title> --seconds <value> --interval <value>";
+      if (!options.deadline.has_value() || !options.repeat_interval_seconds.has_value()) {
+        error = "Usage: add recurring <title> [--at <date> | --time <dur>] --interval <value>";
         return nullptr;
       }
 
       return std::make_unique<RecurringTask>(
           id, std::move(options.title), std::move(options.description), options.priority,
-          std::move(options.tags), *options.seconds_left, *options.repeat_interval_seconds);
+          std::move(options.tags), *options.deadline, *options.repeat_interval_seconds);
 
     case AddTaskType::kBoundedRecurring:
-      if (!options.seconds_left.has_value() || !options.repeat_interval_seconds.has_value() ||
+      if (!options.deadline.has_value() || !options.repeat_interval_seconds.has_value() ||
           !options.repeats_left.has_value()) {
-        error = "Usage: add bounded <title> --seconds <value> --interval <value> --repeats <value>";
+        error = "Usage: add bounded <title> [--at <date> | --time <dur>] --interval <value> --repeats <value>";
         return nullptr;
       }
 
       return std::make_unique<BoundedRecurringTask>(
           id, std::move(options.title), std::move(options.description), options.priority,
-          std::move(options.tags), *options.seconds_left, *options.repeat_interval_seconds,
+          std::move(options.tags), *options.deadline, *options.repeat_interval_seconds,
           *options.repeats_left);
 
     case AddTaskType::kSavings:

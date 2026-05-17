@@ -15,5 +15,6 @@
   },
   "[cmake]": {
     "editor.tabSize": 2
-  }
+  },
+  "cmake.sourceDirectory": "/wsl.localhost/Ubuntu-24.04/home/links/sapeXs/TaskManagerProject"
 }
