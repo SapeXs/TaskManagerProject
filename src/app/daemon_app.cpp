@@ -67,6 +67,11 @@ void DaemonApp::Run() {
     socket_server_.SendResponse(response);
 
     std::cout << "Received: " << message << '\n';
+
+    if (command.GetType() == CommandType::kExit) {
+      Stop();
+      break;
+    }
   }
   autosave_thread_.request_stop();
   deadline_thread_.request_stop();
