@@ -1,19 +1,33 @@
 #include "notifications/notification_service.h"
 
-#include <libnotify/notify.h>
 #include <string>
 
+#ifdef TASKMANAGER_ENABLE_NOTIFICATIONS
+#include <libnotify/notify.h>
+#endif
+
 NotificationService::NotificationService() {
+#ifdef TASKMANAGER_ENABLE_NOTIFICATIONS
   initialized_ = notify_init("TaskManager");
+#else
+  initialized_ = false;
+#endif
 }
 
 NotificationService::~NotificationService() {
+#ifdef TASKMANAGER_ENABLE_NOTIFICATIONS
   if (initialized_) {
     notify_uninit();
   }
+#endif
 }
 
 bool NotificationService::Notify(std::string_view title, std::string_view message) {
+#ifndef TASKMANAGER_ENABLE_NOTIFICATIONS
+  (void)title;
+  (void)message;
+  return false;
+#else
   if (!initialized_) {
     return false;
   }
@@ -40,6 +54,7 @@ bool NotificationService::Notify(std::string_view title, std::string_view messag
   g_object_unref(G_OBJECT(notification));
 
   return result == TRUE;
+#endif
 }
 
 bool NotificationService::NotifyTask(std::string_view task_title, std::string_view message) {
