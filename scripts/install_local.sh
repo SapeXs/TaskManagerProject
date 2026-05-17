@@ -29,3 +29,14 @@ echo "  journalctl --user -u taskmanagerd.service -f"
 echo
 echo "CLI:"
 echo "  taskctl help"
+
+if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+  echo
+  echo "Warning: $HOME/.local/bin is not in PATH."
+  echo "To use 'taskctl' without full path, run:"
+  echo "  echo 'export PATH=\"\$HOME/.local/bin:\$PATH\"' >> ~/.bashrc"
+  echo "  source ~/.bashrc"
+  echo
+  echo "For now, you can use:"
+  echo "  $HOME/.local/bin/taskctl help"
+fi
