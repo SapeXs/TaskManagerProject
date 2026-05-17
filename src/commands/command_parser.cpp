@@ -1,6 +1,5 @@
 #include "commands/command_parser.h"
 
-#include <sstream>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -45,7 +44,7 @@ std::vector<std::string> CommandParser::Split_(std::string_view input) const {
   bool in_quotes = false;
   bool escaped = false;
 
-  for (char ch : input) {
+  for (const char ch : input) {
     if (escaped) {
       current_token += ch;
       escaped = false;

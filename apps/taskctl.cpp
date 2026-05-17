@@ -19,7 +19,7 @@ std::string QuoteArg(std::string_view value) {
 
   std::string result = "\"";
 
-  for (char ch : value) {
+  for (const char ch : value) {
     if (ch == '"' || ch == '\\') {
       result += '\\';
     }
@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
   }
 
   UnixSocketClient client(app_paths::GetSocketPath());
-  std::string response = client.SendRequest(request);
+  const std::string response = client.SendRequest(request);
 
   if (response.empty()) {
     std::cerr << "No response from daemon\n";

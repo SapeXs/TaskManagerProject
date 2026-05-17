@@ -8,6 +8,7 @@ Checks: >
   modernize-*,
   readability-*,
   misc-*,
+  -misc-include-cleaner,
   -bugprone-easily-swappable-parameters,
   -bugprone-exception-escape,
   -cppcoreguidelines-avoid-magic-numbers,

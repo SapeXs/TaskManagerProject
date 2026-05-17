@@ -100,8 +100,9 @@ void DaemonApp::Stop() {
 void DaemonApp::AutosaveLoop(std::stop_token stop_token) {
   while (!stop_token.stop_requested()) {
     std::this_thread::sleep_for(autosave_interval_);
-    if (stop_token.stop_requested())
+    if (stop_token.stop_requested()) {
       break;
+    }
 
     {
       std::lock_guard lock(task_mutex_);
