@@ -25,6 +25,8 @@ class CommandHandler {
   std::string HandleSave();
   std::string HandleClear();
   std::string HandleHelp();
+  std::string HandleTags();
+  std::string HandleShutdown();
   std::string HandleSetTitle(const Command& command);
   std::string HandleSetDescription(const Command& command);
   std::string HandleSetPriority(const Command& command);

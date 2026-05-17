@@ -6,6 +6,7 @@ enum class CommandType {
   kFind,
   kRemove,
   kFilter,
+  kTags,
   kHelp,
   kExit,
   kSave,
