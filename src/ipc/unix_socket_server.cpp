@@ -57,12 +57,12 @@ std::string UnixSocketServer::WaitMessage() {
   return std::string(buffer, bytes);
 }
 
-bool UnixSocketServer::SendResponse(const std::string& response) {
+bool UnixSocketServer::SendResponse(std::string_view response) {
   if (client_fd_ < 0) {
     return false;
   }
 
-  ssize_t bytes = write(client_fd_, response.c_str(), response.size());
+  ssize_t bytes = write(client_fd_, response.data(), response.size());
 
   close(client_fd_);
   client_fd_ = -1;

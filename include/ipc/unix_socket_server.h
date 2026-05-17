@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <filesystem>
-#include <string>
+#include <string_view>
 
 class UnixSocketServer {
  public:
@@ -14,7 +14,7 @@ class UnixSocketServer {
 
   std::string WaitMessage();
 
-  bool SendResponse(const std::string& response);
+  bool SendResponse(std::string_view response);
 
   void Shutdown();
 

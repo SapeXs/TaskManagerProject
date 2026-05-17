@@ -8,7 +8,7 @@
 UnixSocketClient::UnixSocketClient(std::filesystem::path socket_path)
     : socket_path_(std::move(socket_path)) {}
 
-std::string UnixSocketClient::SendRequest(const std::string& request) {
+std::string UnixSocketClient::SendRequest(std::string_view request) {
   int socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
 
   if (socket_fd < 0) {
@@ -25,7 +25,7 @@ std::string UnixSocketClient::SendRequest(const std::string& request) {
     return {};
   }
 
-  write(socket_fd, request.c_str(), request.size());
+  write(socket_fd, request.data(), request.size());
 
   char buffer[4096]{};
 
