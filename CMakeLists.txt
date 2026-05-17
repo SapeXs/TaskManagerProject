@@ -2,12 +2,19 @@ cmake_minimum_required(VERSION 3.20)
 
 project(TaskManagerProject LANGUAGES CXX)
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(LIBNOTIFY REQUIRED libnotify)
+find_package(PkgConfig QUIET)
 
-message(STATUS "libnotify found")
-message(STATUS "libnotify include dirs: ${LIBNOTIFY_INCLUDE_DIRS}")
-message(STATUS "libnotify libraries: ${LIBNOTIFY_LIBRARIES}")
+if(PkgConfig_FOUND)
+  pkg_check_modules(LIBNOTIFY QUIET libnotify)
+endif()
+
+if(LIBNOTIFY_FOUND)
+  message(STATUS "libnotify found: notifications enabled")
+  message(STATUS "libnotify include dirs: ${LIBNOTIFY_INCLUDE_DIRS}")
+  message(STATUS "libnotify libraries: ${LIBNOTIFY_LIBRARIES}")
+else()
+  message(WARNING "libnotify not found: notifications disabled. Install libnotify-dev to enable them.")
+endif()
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -75,17 +82,19 @@ add_executable(
   src/notifications/notification_service.cpp
 )
 
-target_include_directories(taskmanagerd PRIVATE ${LIBNOTIFY_INCLUDE_DIRS})
-
 target_link_libraries(taskmanagerd
     PRIVATE
         task_manager_core
         task_manager_project_options
         Threads::Threads
-        ${LIBNOTIFY_LIBRARIES}
 )
 
-target_compile_options(taskmanagerd PRIVATE ${LIBNOTIFY_CFLAGS_OTHER})
+if(LIBNOTIFY_FOUND)
+  target_compile_definitions(taskmanagerd PRIVATE TASKMANAGER_ENABLE_NOTIFICATIONS)
+  target_include_directories(taskmanagerd PRIVATE ${LIBNOTIFY_INCLUDE_DIRS})
+  target_link_libraries(taskmanagerd PRIVATE ${LIBNOTIFY_LIBRARIES})
+  target_compile_options(taskmanagerd PRIVATE ${LIBNOTIFY_CFLAGS_OTHER})
+endif()
 
 add_executable(
   taskctl
