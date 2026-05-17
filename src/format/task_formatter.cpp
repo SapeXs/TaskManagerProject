@@ -94,7 +94,7 @@ std::string TaskFormatter::FormatTaskList(std::span<TaskBase* const> tasks) {
   return result.empty() ? "No tasks" : result;
 }
 
-std::string TaskFormatter::FormatTags(const std::vector<std::string>& tags) {
+std::string TaskFormatter::FormatTags(std::span<const std::string> tags) {
   if (tags.empty()) {
     return "No tags";
   }
