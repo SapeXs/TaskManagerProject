@@ -3,8 +3,8 @@
 #include <string>
 #include <vector>
 
-#include "ui/command.h"
-#include "ui/command_type.h"
+#include "commands/command.h"
+#include "commands/command_type.h"
 
 class CommandParser {
  public:

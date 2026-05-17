@@ -11,14 +11,15 @@ class SavingsTask : public TaskWithProgress<PercentageProgress> {
  public:
   using TagContainer = TaskBase::TagContainer;
 
-  SavingsTask(int32_t id, std::string title, std::string description,
-              TaskPriority priority, TagContainer tags, int64_t current_value,
-              int64_t target_value);
+  SavingsTask(int32_t id, std::string title, std::string description, TaskPriority priority,
+              TagContainer tags, int64_t current_value, int64_t target_value);
 
-  std::string GetTypeName() const override;
+  std::string_view GetTypeName() const override;
 
   int64_t GetCurrentValue() const noexcept;
   int64_t GetTargetValue() const noexcept;
+
+  std::vector<std::string> GetStorageFields() const override;
 
   void AddValue(int64_t value) noexcept;
 };
