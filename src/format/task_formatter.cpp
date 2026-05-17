@@ -71,6 +71,26 @@ std::string TaskFormatter::FormatTaskList(std::span<const TaskBase* const> tasks
   return result.empty() ? "No tasks" : result;
 }
 
+std::string TaskFormatter::FormatTags(const std::vector<std::string>& tags) {
+  if (tags.empty()) {
+    return "No tags";
+  }
+
+  std::string result = "Used tags:\n";
+
+  for (const std::string& tag : tags) {
+    result += "  ";
+    result += tag;
+    result += '\n';
+  }
+
+  if (!result.empty() && result.back() == '\n') {
+    result.pop_back();
+  }
+
+  return result;
+}
+
 std::string TaskFormatter::FormatHelp() {
   return R"(TaskManager CLI
 
@@ -120,6 +140,10 @@ Task viewing:
       Show one task by id.
       Example:
         taskctl find 3
+  tags
+    Show all used tags.
+    Example:
+      taskctl tags
 
 Filtering:
   filter priority <low|medium|high|critical>
@@ -223,6 +247,10 @@ Managing:
 
   help
       Show this help message.
+  shutdown
+      Stop TaskManager daemon from taskctl.
+      Example:
+        taskctl shutdown
 
 Hints:
   Date/time examples:
@@ -250,6 +278,9 @@ Hints:
     You can modify tags later:
       taskctl add-tag 3 university
       taskctl remove-tag 3 study
+
+    You can see all used tags:
+      taskctl tags
 
   Titles and values with spaces:
     Use quotes:

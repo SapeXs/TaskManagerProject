@@ -174,10 +174,14 @@ std::string CommandHandler::Handle(const Command& command) {
       return HandleRemove(command);
     case CommandType::kFilter:
       return HandleFilter(command);
+    case CommandType::kTags:
+      return HandleTags();
     case CommandType::kSave:
       return HandleSave();
     case CommandType::kHelp:
       return HandleHelp();
+    case CommandType::kExit:
+      return HandleShutdown();
     case CommandType::kClear:
       return HandleClear();
     case CommandType::kSetTitle:
@@ -370,6 +374,11 @@ std::string CommandHandler::HandleList() {
   return TaskFormatter::FormatTaskList(tasks);
 }
 
+std::string CommandHandler::HandleTags() {
+  std::lock_guard lock(task_mutex_);
+  return TaskFormatter::FormatTags(task_manager_.GetAllTags());
+}
+
 std::string CommandHandler::HandleFind(const Command& command) {
   if (command.GetArgs().empty())
     return "Missing task id";
@@ -442,6 +451,10 @@ std::string CommandHandler::HandleSave() {
 
 std::string CommandHandler::HandleHelp() {
   return TaskFormatter::FormatHelp();
+}
+
+std::string CommandHandler::HandleShutdown() {
+  return "TaskManager daemon shutting down";
 }
 
 std::string CommandHandler::HandleClear() {
