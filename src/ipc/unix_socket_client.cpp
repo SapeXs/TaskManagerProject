@@ -25,17 +25,37 @@ std::string UnixSocketClient::SendRequest(std::string_view request) {
     return {};
   }
 
-  write(socket_fd, request.data(), request.size());
+  std::string_view remaining_request = request;
 
-  char buffer[4096]{};
+  while (!remaining_request.empty()) {
+    ssize_t written = write(socket_fd, remaining_request.data(), remaining_request.size());
 
-  ssize_t bytes = read(socket_fd, buffer, sizeof(buffer));
+    if (written <= 0) {
+      close(socket_fd);
+      return {};
+    }
 
-  close(socket_fd);
-
-  if (bytes <= 0) {
-    return {};
+    remaining_request.remove_prefix(static_cast<std::size_t>(written));
   }
 
-  return std::string(buffer, bytes);
+  std::string response;
+  char buffer[4096]{};
+
+  while (true) {
+    ssize_t bytes = read(socket_fd, buffer, sizeof(buffer));
+
+    if (bytes < 0) {
+      close(socket_fd);
+      return {};
+    }
+
+    if (bytes == 0) {
+      break;
+    }
+
+    response.append(buffer, static_cast<std::size_t>(bytes));
+  }
+
+  close(socket_fd);
+  return response;
 }

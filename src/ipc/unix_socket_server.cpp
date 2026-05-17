@@ -62,12 +62,24 @@ bool UnixSocketServer::SendResponse(std::string_view response) {
     return false;
   }
 
-  ssize_t bytes = write(client_fd_, response.data(), response.size());
+  bool ok = true;
+  std::string_view remaining_response = response;
+
+  while (!remaining_response.empty()) {
+    ssize_t written = write(client_fd_, remaining_response.data(), remaining_response.size());
+
+    if (written <= 0) {
+      ok = false;
+      break;
+    }
+
+    remaining_response.remove_prefix(static_cast<std::size_t>(written));
+  }
 
   close(client_fd_);
   client_fd_ = -1;
 
-  return bytes >= 0;
+  return ok;
 }
 
 void UnixSocketServer::Shutdown() {
