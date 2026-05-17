@@ -17,7 +17,9 @@ std::string_view ToString(CommandType type) {
     case CommandType::kHelp:
       return "help";
     case CommandType::kExit:
-      return "exit";
+      return "shutdown";
+    case CommandType::kTags:
+      return "tags";
     case CommandType::kSave:
       return "save";
     case CommandType::kClear:
