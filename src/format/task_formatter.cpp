@@ -174,11 +174,6 @@ Progress and type-specific editing:
       Example:
         taskctl set-date 3 "2026-06-01"
 
-  set-remind-before <id> <duration>
-      Set how much time before deadline to send a reminder.
-      Example:
-        taskctl set-remind-before 3 30m
-
   set-time <id> <duration>
       Change time left for reminder or recurring task.
       Example:

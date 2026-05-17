@@ -208,9 +208,6 @@ std::string CommandHandler::Handle(const Command& command) {
       return HandleSetDeadline(command);
     case CommandType::kSetDate:
       return HandleSetDate(command);
-    case CommandType::kSetRemindBefore:
-      return HandleSetRemindBefore(command);
-
     default:
       return "Unknown command";
   }
@@ -773,10 +770,6 @@ std::string CommandHandler::HandleSetDeadline(const Command& command) {
 
 std::string CommandHandler::HandleSetDate(const Command& command) {
   return HandleSetDeadline(command);
-}
-
-std::string CommandHandler::HandleSetRemindBefore(const Command& /*command*/) {
-  return "Remind before updated";
 }
 
 void CommandHandler::SaveTasksLocked() {

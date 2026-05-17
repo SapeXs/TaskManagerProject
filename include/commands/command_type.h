@@ -26,7 +26,6 @@ enum class CommandType {
 
   kSetDeadline,
   kSetDate,
-  kSetRemindBefore,
 
   kInvalid,
 };

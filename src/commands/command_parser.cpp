@@ -30,8 +30,7 @@ const std::unordered_map<std::string, CommandType> kCommandMap = {
     {"reset", CommandType::kReset},
 
     {"set-deadline", CommandType::kSetDeadline},
-    {"set-date", CommandType::kSetDate},
-    {"set-remind-before", CommandType::kSetRemindBefore}};
+    {"set-date", CommandType::kSetDate}};
 }  // namespace
 
 std::vector<std::string> CommandParser::Split_(const std::string& input) const {

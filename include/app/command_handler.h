@@ -40,7 +40,6 @@ class CommandHandler {
 
   std::string HandleSetDeadline(const Command& command);
   std::string HandleSetDate(const Command& command);
-  std::string HandleSetRemindBefore(const Command& command);
 
   void SaveTasksLocked();
   void ForgetNotificationLocked(int32_t task_id);
