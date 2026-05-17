@@ -1,0 +1,13 @@
+[Unit]
+Description=TaskManager daemon
+After=default.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/taskmanagerd
+Restart=on-failure
+RestartSec=3
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+
+[Install]
+WantedBy=default.target
