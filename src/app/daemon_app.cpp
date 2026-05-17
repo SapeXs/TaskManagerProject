@@ -4,9 +4,20 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
+#include <vector>
 
 #include "app/command_handler.h"
 #include "commands/command_parser.h"
+
+namespace {
+
+struct DeadlineNotification {
+  int32_t task_id = 0;
+  std::string title;
+  std::string message;
+};
+
+}  // namespace
 
 DaemonApp::DaemonApp(std::chrono::seconds autosave_interval, std::filesystem::path socket_server)
     : autosave_interval_(autosave_interval), storage_("tasks.txt"), socket_server_(socket_server) {}
@@ -96,26 +107,46 @@ void DaemonApp::DeadlineLoop(std::stop_token stop_token) {
 
   while (!stop_token.stop_requested()) {
     std::this_thread::sleep_for(check_interval);
-    if (stop_token.stop_requested())
+
+    if (stop_token.stop_requested()) {
       break;
+    }
+
+    std::vector<DeadlineNotification> notifications;
 
     {
       std::lock_guard lock(task_mutex_);
+
       for (const TaskBase* task : task_manager_.GetAllTasks()) {
-        if (task == nullptr)
+        if (task == nullptr) {
           continue;
+        }
+
+        const int32_t task_id = task->GetId();
 
         if (task->GetState() == TaskState::kOverdue) {
-          if (notified_tasks_.find(task->GetId()) == notified_tasks_.end()) {
-            notification_service_.Notify("Deadline Passed!", "Task: " + task->GetTitle());
+          if (!notified_tasks_.contains(task_id)) {
+            notifications.push_back({
+                task_id,
+                "Deadline Passed!",
+                "Task: " + task->GetTitle(),
+            });
 
-            notified_tasks_.insert(task->GetId());
-            std::cout << "[DeadlineWatcher] Notified overdue for task ID " << task->GetId() << '\n';
+            notified_tasks_.insert(task_id);
           }
-        } else {
-          notified_tasks_.erase(task->GetId());
+
+          continue;
         }
+
+        notified_tasks_.erase(task_id);
       }
+    }
+
+    for (const DeadlineNotification& notification : notifications) {
+      notification_service_.Notify(notification.title, notification.message);
+
+      std::cout << "[DeadlineWatcher] Notified overdue for task ID " << notification.task_id
+                << '\n';
     }
   }
 }
