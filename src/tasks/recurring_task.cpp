@@ -1,4 +1,5 @@
 #include "tasks/recurring_task.h"
+
 #include "core/task_name.h"
 
 RecurringTask::RecurringTask(int32_t id, std::string title, std::string description,
@@ -34,7 +35,8 @@ void RecurringTask::SetSecondsLeft(int64_t seconds_left) noexcept {
 }
 
 void RecurringTask::ResetToNextOccurrence() noexcept {
-  GetProgress().SetDeadline(std::chrono::system_clock::now() + std::chrono::seconds(repeat_interval_seconds_));
+  GetProgress().SetDeadline(std::chrono::system_clock::now() +
+                            std::chrono::seconds(repeat_interval_seconds_));
 }
 
 void RecurringTask::SetRepeatIntervalSeconds(int64_t repeat_interval_seconds) noexcept {

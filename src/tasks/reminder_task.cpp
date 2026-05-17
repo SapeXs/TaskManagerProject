@@ -1,4 +1,5 @@
 #include "tasks/reminder_task.h"
+
 #include "core/task_name.h"
 
 ReminderTask::ReminderTask(int32_t id, std::string title, std::string description,

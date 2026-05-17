@@ -13,7 +13,8 @@ class RecurringTask : public TaskWithProgress<TimeLeftProgress> {
   using TagContainer = TaskBase::TagContainer;
 
   RecurringTask(int32_t id, std::string title, std::string description, TaskPriority priority,
-                TagContainer tags, std::chrono::system_clock::time_point deadline, int64_t repeat_interval_seconds);
+                TagContainer tags, std::chrono::system_clock::time_point deadline,
+                int64_t repeat_interval_seconds);
 
   std::string_view GetTypeName() const override;
 

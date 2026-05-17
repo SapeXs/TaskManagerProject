@@ -23,19 +23,38 @@ namespace {
 std::string JoinArgs(std::span<const std::string> args) {
   std::string result;
   for (std::size_t i = 0; i < args.size(); ++i) {
-    if (i > 0) result += ' ';
+    if (i > 0)
+      result += ' ';
     result += args[i];
   }
   return result;
 }
 
 bool ParseTaskType(const std::string& value, AddTaskType& type) {
-  if (value == "reminder") { type = AddTaskType::kReminder; return true; }
-  if (value == "recurring") { type = AddTaskType::kRecurring; return true; }
-  if (value == "bounded" || value == "bounded-recurring") { type = AddTaskType::kBoundedRecurring; return true; }
-  if (value == "savings") { type = AddTaskType::kSavings; return true; }
-  if (value == "stepped") { type = AddTaskType::kSteppedDeadline; return true; }
-  if (value == "final") { type = AddTaskType::kFinalDeadline; return true; }
+  if (value == "reminder") {
+    type = AddTaskType::kReminder;
+    return true;
+  }
+  if (value == "recurring") {
+    type = AddTaskType::kRecurring;
+    return true;
+  }
+  if (value == "bounded" || value == "bounded-recurring") {
+    type = AddTaskType::kBoundedRecurring;
+    return true;
+  }
+  if (value == "savings") {
+    type = AddTaskType::kSavings;
+    return true;
+  }
+  if (value == "stepped") {
+    type = AddTaskType::kSteppedDeadline;
+    return true;
+  }
+  if (value == "final") {
+    type = AddTaskType::kFinalDeadline;
+    return true;
+  }
   return false;
 }
 
@@ -63,7 +82,8 @@ bool ReadInt64(std::span<const std::string> args, std::size_t& index, std::strin
 bool ReadInt32(std::span<const std::string> args, std::size_t& index, std::string_view option,
                int32_t& value, std::string& error) {
   int64_t parsed_value = 0;
-  if (!ReadInt64(args, index, option, parsed_value, error)) return false;
+  if (!ReadInt64(args, index, option, parsed_value, error))
+    return false;
   if (parsed_value < INT32_MIN || parsed_value > INT32_MAX) {
     error = "Value for " + std::string(option) + " is out of int32 range";
     return false;
@@ -75,7 +95,8 @@ bool ReadInt32(std::span<const std::string> args, std::size_t& index, std::strin
 bool ReadSize(std::span<const std::string> args, std::size_t& index, std::string_view option,
               std::size_t& value, std::string& error) {
   int64_t parsed_value = 0;
-  if (!ReadInt64(args, index, option, parsed_value, error)) return false;
+  if (!ReadInt64(args, index, option, parsed_value, error))
+    return false;
   if (parsed_value < 0) {
     error = "Value for " + std::string(option) + " must be non-negative";
     return false;
@@ -120,7 +141,8 @@ bool ReadInt64Value(const std::string& text, int64_t& value, std::string& error)
 
 bool ReadInt32Value(const std::string& text, int32_t& value, std::string& error) {
   int64_t parsed_value = 0;
-  if (!ReadInt64Value(text, parsed_value, error)) return false;
+  if (!ReadInt64Value(text, parsed_value, error))
+    return false;
   if (parsed_value < INT32_MIN || parsed_value > INT32_MAX) {
     error = "Integer value is out of int32 range";
     return false;
@@ -137,31 +159,55 @@ CommandHandler::CommandHandler(TaskManager& task_manager, TaskStorage& storage,
 
 std::string CommandHandler::Handle(const Command& command) {
   switch (command.GetType()) {
-    case CommandType::kAdd: return HandleAdd(command);
-    case CommandType::kList: return HandleList();
-    case CommandType::kFind: return HandleFind(command);
-    case CommandType::kRemove: return HandleRemove(command);
-    case CommandType::kFilter: return HandleFilter(command);
-    case CommandType::kSave: return HandleSave();
-    case CommandType::kHelp: return HandleHelp();
-    case CommandType::kClear: return HandleClear();
-    case CommandType::kSetTitle: return HandleSetTitle(command);
-    case CommandType::kSetDescription: return HandleSetDescription(command);
-    case CommandType::kSetPriority: return HandleSetPriority(command);
-    case CommandType::kAddTag: return HandleAddTag(command);
-    case CommandType::kRemoveTag: return HandleRemoveTag(command);
-    case CommandType::kSetTime: return HandleSetTime(command);
-    case CommandType::kSetInterval: return HandleSetInterval(command);
-    case CommandType::kSetRepeats: return HandleSetRepeats(command);
-    case CommandType::kAddValue: return HandleAddValue(command);
-    case CommandType::kAdvance: return HandleAdvance(command);
-    case CommandType::kOverdue: return HandleOverdue(command);
-    case CommandType::kReset: return HandleReset(command);
-    case CommandType::kSetDeadline: return HandleSetDeadline(command);
-    case CommandType::kSetDate: return HandleSetDate(command);
-    case CommandType::kSetRemindBefore: return HandleSetRemindBefore(command);
+    case CommandType::kAdd:
+      return HandleAdd(command);
+    case CommandType::kList:
+      return HandleList();
+    case CommandType::kFind:
+      return HandleFind(command);
+    case CommandType::kRemove:
+      return HandleRemove(command);
+    case CommandType::kFilter:
+      return HandleFilter(command);
+    case CommandType::kSave:
+      return HandleSave();
+    case CommandType::kHelp:
+      return HandleHelp();
+    case CommandType::kClear:
+      return HandleClear();
+    case CommandType::kSetTitle:
+      return HandleSetTitle(command);
+    case CommandType::kSetDescription:
+      return HandleSetDescription(command);
+    case CommandType::kSetPriority:
+      return HandleSetPriority(command);
+    case CommandType::kAddTag:
+      return HandleAddTag(command);
+    case CommandType::kRemoveTag:
+      return HandleRemoveTag(command);
+    case CommandType::kSetTime:
+      return HandleSetTime(command);
+    case CommandType::kSetInterval:
+      return HandleSetInterval(command);
+    case CommandType::kSetRepeats:
+      return HandleSetRepeats(command);
+    case CommandType::kAddValue:
+      return HandleAddValue(command);
+    case CommandType::kAdvance:
+      return HandleAdvance(command);
+    case CommandType::kOverdue:
+      return HandleOverdue(command);
+    case CommandType::kReset:
+      return HandleReset(command);
+    case CommandType::kSetDeadline:
+      return HandleSetDeadline(command);
+    case CommandType::kSetDate:
+      return HandleSetDate(command);
+    case CommandType::kSetRemindBefore:
+      return HandleSetRemindBefore(command);
 
-    default: return "Unknown command";
+    default:
+      return "Unknown command";
   }
 }
 
@@ -185,7 +231,8 @@ std::string CommandHandler::HandleAdd(const Command& command) {
 
   for (std::size_t i = start; i < args.size(); ++i) {
     if (args[i] == "--priority") {
-      if (i + 1 >= args.size()) return "Missing priority value";
+      if (i + 1 >= args.size())
+        return "Missing priority value";
       if (!ParseTaskPriority(args[i + 1], options.priority)) {
         return "Invalid priority. Available: low, medium, high, critical";
       }
@@ -194,29 +241,36 @@ std::string CommandHandler::HandleAdd(const Command& command) {
     }
 
     if (args[i] == "--tag") {
-      if (i + 1 >= args.size()) return "Missing tag value";
+      if (i + 1 >= args.size())
+        return "Missing tag value";
       options.tags.insert(args[i + 1]);
       ++i;
       continue;
     }
 
     if (args[i] == "--at" || args[i] == "--date") {
-      if (i + 1 >= args.size()) return "Missing value for " + args[i];
-      if (options.deadline.has_value()) return "Use only one time/date flag";
+      if (i + 1 >= args.size())
+        return "Missing value for " + args[i];
+      if (options.deadline.has_value())
+        return "Use only one time/date flag";
 
       auto parsed = ParseDateTime(args[i + 1]);
-      if (!parsed) return "Invalid date/time format. Expected: YYYY-MM-DD or YYYY-MM-DD HH:MM";
+      if (!parsed)
+        return "Invalid date/time format. Expected: YYYY-MM-DD or YYYY-MM-DD HH:MM";
       options.deadline = *parsed;
       ++i;
       continue;
     }
 
     if (args[i] == "--seconds" || args[i] == "--time") {
-      if (i + 1 >= args.size()) return "Missing value for " + args[i];
-      if (options.deadline.has_value()) return "Use only one time/date flag";
+      if (i + 1 >= args.size())
+        return "Missing value for " + args[i];
+      if (options.deadline.has_value())
+        return "Use only one time/date flag";
 
       int64_t value = 0;
-      if (!TryParseDuration(args[i + 1], value, error)) return error;
+      if (!TryParseDuration(args[i + 1], value, error))
+        return error;
 
       options.deadline = std::chrono::system_clock::now() + std::chrono::seconds(value);
       ++i;
@@ -224,9 +278,11 @@ std::string CommandHandler::HandleAdd(const Command& command) {
     }
 
     if (args[i] == "--interval") {
-      if (i + 1 >= args.size()) return "Missing value for --interval";
+      if (i + 1 >= args.size())
+        return "Missing value for --interval";
       int64_t value = 0;
-      if (!TryParseDuration(args[i + 1], value, error)) return error;
+      if (!TryParseDuration(args[i + 1], value, error))
+        return error;
       options.repeat_interval_seconds = value;
       ++i;
       continue;
@@ -234,27 +290,31 @@ std::string CommandHandler::HandleAdd(const Command& command) {
 
     if (args[i] == "--repeats") {
       int32_t value = 0;
-      if (!ReadInt32(args, i, "--repeats", value, error)) return error;
+      if (!ReadInt32(args, i, "--repeats", value, error))
+        return error;
       options.repeats_left = value;
       continue;
     }
 
     if (args[i] == "--current") {
       int64_t value = 0;
-      if (!ReadInt64(args, i, "--current", value, error)) return error;
+      if (!ReadInt64(args, i, "--current", value, error))
+        return error;
       options.current_value = value;
       continue;
     }
 
     if (args[i] == "--target") {
       int64_t value = 0;
-      if (!ReadInt64(args, i, "--target", value, error)) return error;
+      if (!ReadInt64(args, i, "--target", value, error))
+        return error;
       options.target_value = value;
       continue;
     }
 
     if (args[i] == "--step") {
-      if (i + 1 >= args.size()) return "Missing step text";
+      if (i + 1 >= args.size())
+        return "Missing step text";
       options.step_texts.push_back(args[i + 1]);
       ++i;
       continue;
@@ -262,13 +322,15 @@ std::string CommandHandler::HandleAdd(const Command& command) {
 
     if (args[i] == "--current-step") {
       std::size_t value = 0;
-      if (!ReadSize(args, i, "--current-step", value, error)) return error;
+      if (!ReadSize(args, i, "--current-step", value, error))
+        return error;
       options.current_step = value;
       continue;
     }
 
     if (args[i] == "--final") {
-      if (i + 1 >= args.size()) return "Missing final deadline text";
+      if (i + 1 >= args.size())
+        return "Missing final deadline text";
       options.final_deadline_text = args[i + 1];
       ++i;
       continue;
@@ -306,17 +368,24 @@ std::string CommandHandler::HandleList() {
 }
 
 std::string CommandHandler::HandleFind(const Command& command) {
-  if (command.GetArgs().empty()) return "Missing task id";
+  if (command.GetArgs().empty())
+    return "Missing task id";
   int32_t id = 0;
-  try { id = std::stoi(command.GetArgs()[0]); } catch (...) { return "Invalid task id"; }
+  try {
+    id = std::stoi(command.GetArgs()[0]);
+  } catch (...) {
+    return "Invalid task id";
+  }
   std::lock_guard lock(task_mutex_);
   const TaskBase* task = task_manager_.FindTaskById(id);
-  if (task == nullptr) return "Task not found";
+  if (task == nullptr)
+    return "Task not found";
   return TaskFormatter::FormatTask(*task);
 }
 
 std::string CommandHandler::HandleFilter(const Command& command) {
-  if (command.GetArgs().size() < 2) return "Usage: filter <priority|state|tag> <value>";
+  if (command.GetArgs().size() < 2)
+    return "Usage: filter <priority|state|tag> <value>";
   const std::string& field = command.GetArgs()[0];
   const std::string& value = command.GetArgs()[1];
 
@@ -324,12 +393,14 @@ std::string CommandHandler::HandleFilter(const Command& command) {
 
   if (field == "priority") {
     TaskPriority priority;
-    if (!ParseTaskPriority(value, priority)) return "Invalid priority. Available: low, medium, high, critical";
+    if (!ParseTaskPriority(value, priority))
+      return "Invalid priority. Available: low, medium, high, critical";
     return TaskFormatter::FormatTaskList(task_manager_.FilterByPriority(priority));
   }
   if (field == "state") {
     TaskState state;
-    if (!ParseTaskState(value, state)) return "Invalid state. Available: not_started, in_progress, done, overdue, scheduled";
+    if (!ParseTaskState(value, state))
+      return "Invalid state. Available: not_started, in_progress, done, overdue, scheduled";
     return TaskFormatter::FormatTaskList(task_manager_.FilterByState(state));
   }
   if (field == "tag") {
@@ -339,12 +410,18 @@ std::string CommandHandler::HandleFilter(const Command& command) {
 }
 
 std::string CommandHandler::HandleRemove(const Command& command) {
-  if (command.GetArgs().empty()) return "Missing task id";
+  if (command.GetArgs().empty())
+    return "Missing task id";
   int32_t id = 0;
-  try { id = std::stoi(command.GetArgs()[0]); } catch (...) { return "Invalid task id"; }
+  try {
+    id = std::stoi(command.GetArgs()[0]);
+  } catch (...) {
+    return "Invalid task id";
+  }
   {
     std::lock_guard lock(task_mutex_);
-    if (task_manager_.FindTaskById(id) == nullptr) return "Task not found";
+    if (task_manager_.FindTaskById(id) == nullptr)
+      return "Task not found";
     task_manager_.RemoveTask(id);
   }
   return "Task removed";
@@ -373,95 +450,116 @@ std::string CommandHandler::HandleClear() {
 }
 
 std::string CommandHandler::HandleSetTitle(const Command& command) {
-  if (command.GetArgs().size() < 2) return "Usage: set-title <id> <new title>";
+  if (command.GetArgs().size() < 2)
+    return "Usage: set-title <id> <new title>";
   std::string error;
   int32_t id = 0;
-  if (!ReadTaskId(command.GetArgs(), id, error)) return error;
+  if (!ReadTaskId(command.GetArgs(), id, error))
+    return error;
 
   std::vector<std::string> title_parts(command.GetArgs().begin() + 1, command.GetArgs().end());
   std::string title = JoinArgs(title_parts);
 
   std::lock_guard lock(task_mutex_);
   TaskBase* task = task_manager_.FindTaskById(id);
-  if (task == nullptr) return "Task not found";
+  if (task == nullptr)
+    return "Task not found";
 
   task->SetTitle(std::move(title));
   return "Title updated";
 }
 
 std::string CommandHandler::HandleSetDescription(const Command& command) {
-  if (command.GetArgs().size() < 2) return "Usage: set-description <id> <new description>";
+  if (command.GetArgs().size() < 2)
+    return "Usage: set-description <id> <new description>";
   std::string error;
   int32_t id = 0;
-  if (!ReadTaskId(command.GetArgs(), id, error)) return error;
+  if (!ReadTaskId(command.GetArgs(), id, error))
+    return error;
 
-  std::vector<std::string> description_parts(command.GetArgs().begin() + 1, command.GetArgs().end());
+  std::vector<std::string> description_parts(command.GetArgs().begin() + 1,
+                                             command.GetArgs().end());
   std::string description = JoinArgs(description_parts);
 
   std::lock_guard lock(task_mutex_);
   TaskBase* task = task_manager_.FindTaskById(id);
-  if (task == nullptr) return "Task not found";
+  if (task == nullptr)
+    return "Task not found";
 
   task->SetDescription(std::move(description));
   return "Description updated";
 }
 
 std::string CommandHandler::HandleSetPriority(const Command& command) {
-  if (command.GetArgs().size() != 2) return "Usage: set-priority <id> <low|medium|high|critical>";
+  if (command.GetArgs().size() != 2)
+    return "Usage: set-priority <id> <low|medium|high|critical>";
   std::string error;
   int32_t id = 0;
-  if (!ReadTaskId(command.GetArgs(), id, error)) return error;
+  if (!ReadTaskId(command.GetArgs(), id, error))
+    return error;
 
   TaskPriority priority;
-  if (!ParseTaskPriority(command.GetArgs()[1], priority)) return "Invalid priority";
+  if (!ParseTaskPriority(command.GetArgs()[1], priority))
+    return "Invalid priority";
 
   std::lock_guard lock(task_mutex_);
   TaskBase* task = task_manager_.FindTaskById(id);
-  if (task == nullptr) return "Task not found";
+  if (task == nullptr)
+    return "Task not found";
 
   task->SetPriority(priority);
   return "Priority updated";
 }
 
 std::string CommandHandler::HandleAddTag(const Command& command) {
-  if (command.GetArgs().size() != 2) return "Usage: add-tag <id> <tag>";
+  if (command.GetArgs().size() != 2)
+    return "Usage: add-tag <id> <tag>";
   std::string error;
   int32_t id = 0;
-  if (!ReadTaskId(command.GetArgs(), id, error)) return error;
+  if (!ReadTaskId(command.GetArgs(), id, error))
+    return error;
 
   std::lock_guard lock(task_mutex_);
   TaskBase* task = task_manager_.FindTaskById(id);
-  if (task == nullptr) return "Task not found";
+  if (task == nullptr)
+    return "Task not found";
 
   task->AddTag(command.GetArgs()[1]);
   return "Tag added";
 }
 
 std::string CommandHandler::HandleRemoveTag(const Command& command) {
-  if (command.GetArgs().size() != 2) return "Usage: remove-tag <id> <tag>";
+  if (command.GetArgs().size() != 2)
+    return "Usage: remove-tag <id> <tag>";
   std::string error;
   int32_t id = 0;
-  if (!ReadTaskId(command.GetArgs(), id, error)) return error;
+  if (!ReadTaskId(command.GetArgs(), id, error))
+    return error;
 
   std::lock_guard lock(task_mutex_);
   TaskBase* task = task_manager_.FindTaskById(id);
-  if (task == nullptr) return "Task not found";
+  if (task == nullptr)
+    return "Task not found";
 
   task->RemoveTag(command.GetArgs()[1]);
   return "Tag removed";
 }
 
 std::string CommandHandler::HandleSetTime(const Command& command) {
-  if (command.GetArgs().size() != 2) return "Usage: set-time <id> <seconds>";
+  if (command.GetArgs().size() != 2)
+    return "Usage: set-time <id> <seconds>";
   std::string error;
   int32_t id = 0;
   int64_t seconds = 0;
-  if (!ReadTaskId(command.GetArgs(), id, error)) return error;
-  if (!ReadInt64Value(command.GetArgs()[1], seconds, error)) return error;
+  if (!ReadTaskId(command.GetArgs(), id, error))
+    return error;
+  if (!ReadInt64Value(command.GetArgs()[1], seconds, error))
+    return error;
 
   std::lock_guard lock(task_mutex_);
   TaskBase* task = task_manager_.FindTaskById(id);
-  if (task == nullptr) return "Task not found";
+  if (task == nullptr)
+    return "Task not found";
 
   if (auto* reminder = dynamic_cast<ReminderTask*>(task); reminder != nullptr) {
     reminder->SetSecondsLeft(seconds);
@@ -475,108 +573,135 @@ std::string CommandHandler::HandleSetTime(const Command& command) {
 }
 
 std::string CommandHandler::HandleSetInterval(const Command& command) {
-  if (command.GetArgs().size() != 2) return "Usage: set-interval <id> <seconds>";
+  if (command.GetArgs().size() != 2)
+    return "Usage: set-interval <id> <seconds>";
   std::string error;
   int32_t id = 0;
   int64_t interval = 0;
-  if (!ReadTaskId(command.GetArgs(), id, error)) return error;
-  if (!ReadInt64Value(command.GetArgs()[1], interval, error)) return error;
+  if (!ReadTaskId(command.GetArgs(), id, error))
+    return error;
+  if (!ReadInt64Value(command.GetArgs()[1], interval, error))
+    return error;
 
   std::lock_guard lock(task_mutex_);
   TaskBase* task = task_manager_.FindTaskById(id);
-  if (task == nullptr) return "Task not found";
+  if (task == nullptr)
+    return "Task not found";
 
   auto* recurring = dynamic_cast<RecurringTask*>(task);
-  if (recurring == nullptr) return "This task type does not support interval";
+  if (recurring == nullptr)
+    return "This task type does not support interval";
 
   recurring->SetRepeatIntervalSeconds(interval);
   return "Interval updated";
 }
 
 std::string CommandHandler::HandleSetRepeats(const Command& command) {
-  if (command.GetArgs().size() != 2) return "Usage: set-repeats <id> <count>";
+  if (command.GetArgs().size() != 2)
+    return "Usage: set-repeats <id> <count>";
   std::string error;
   int32_t id = 0;
   int32_t repeats = 0;
-  if (!ReadTaskId(command.GetArgs(), id, error)) return error;
-  if (!ReadInt32Value(command.GetArgs()[1], repeats, error)) return error;
+  if (!ReadTaskId(command.GetArgs(), id, error))
+    return error;
+  if (!ReadInt32Value(command.GetArgs()[1], repeats, error))
+    return error;
 
   std::lock_guard lock(task_mutex_);
   TaskBase* task = task_manager_.FindTaskById(id);
-  if (task == nullptr) return "Task not found";
+  if (task == nullptr)
+    return "Task not found";
 
   auto* bounded = dynamic_cast<BoundedRecurringTask*>(task);
-  if (bounded == nullptr) return "This task type does not support repeats";
+  if (bounded == nullptr)
+    return "This task type does not support repeats";
 
   bounded->SetRepeatsLeft(repeats);
   return "Repeats updated";
 }
 
 std::string CommandHandler::HandleAddValue(const Command& command) {
-  if (command.GetArgs().size() != 2) return "Usage: add-value <id> <value>";
+  if (command.GetArgs().size() != 2)
+    return "Usage: add-value <id> <value>";
   std::string error;
   int32_t id = 0;
   int64_t value = 0;
-  if (!ReadTaskId(command.GetArgs(), id, error)) return error;
-  if (!ReadInt64Value(command.GetArgs()[1], value, error)) return error;
+  if (!ReadTaskId(command.GetArgs(), id, error))
+    return error;
+  if (!ReadInt64Value(command.GetArgs()[1], value, error))
+    return error;
 
   std::lock_guard lock(task_mutex_);
   TaskBase* task = task_manager_.FindTaskById(id);
-  if (task == nullptr) return "Task not found";
+  if (task == nullptr)
+    return "Task not found";
 
   auto* savings = dynamic_cast<SavingsTask*>(task);
-  if (savings == nullptr) return "This task type does not support value progress";
+  if (savings == nullptr)
+    return "This task type does not support value progress";
 
   savings->AddValue(value);
   return "Value updated";
 }
 
 std::string CommandHandler::HandleAdvance(const Command& command) {
-  if (command.GetArgs().size() != 1) return "Usage: advance <id>";
+  if (command.GetArgs().size() != 1)
+    return "Usage: advance <id>";
   std::string error;
   int32_t id = 0;
-  if (!ReadTaskId(command.GetArgs(), id, error)) return error;
+  if (!ReadTaskId(command.GetArgs(), id, error))
+    return error;
 
   std::lock_guard lock(task_mutex_);
   TaskBase* task = task_manager_.FindTaskById(id);
-  if (task == nullptr) return "Task not found";
+  if (task == nullptr)
+    return "Task not found";
 
   auto* stepped = dynamic_cast<SteppedDeadlineTask*>(task);
-  if (stepped == nullptr) return "This task type does not support steps";
+  if (stepped == nullptr)
+    return "This task type does not support steps";
 
   stepped->AdvanceStep();
   return "Step advanced";
 }
 
 std::string CommandHandler::HandleOverdue(const Command& command) {
-  if (command.GetArgs().size() != 1) return "Usage: overdue <id>";
+  if (command.GetArgs().size() != 1)
+    return "Usage: overdue <id>";
   std::string error;
   int32_t id = 0;
-  if (!ReadTaskId(command.GetArgs(), id, error)) return error;
+  if (!ReadTaskId(command.GetArgs(), id, error))
+    return error;
 
   std::lock_guard lock(task_mutex_);
   TaskBase* task = task_manager_.FindTaskById(id);
-  if (task == nullptr) return "Task not found";
+  if (task == nullptr)
+    return "Task not found";
 
   auto* stepped = dynamic_cast<SteppedDeadlineTask*>(task);
-  if (stepped == nullptr) return "This task type does not support overdue state";
+  if (stepped == nullptr)
+    return "This task type does not support overdue state";
 
   stepped->SetOverdue();
   return "Task marked overdue";
 }
 
 std::string CommandHandler::HandleReset(const Command& command) {
-  if (command.GetArgs().size() != 1) return "Usage: reset <id>";
+  if (command.GetArgs().size() != 1)
+    return "Usage: reset <id>";
   std::string error;
   int32_t id = 0;
-  if (!ReadTaskId(command.GetArgs(), id, error)) return error;
+  if (!ReadTaskId(command.GetArgs(), id, error))
+    return error;
 
   std::lock_guard lock(task_mutex_);
   TaskBase* task = task_manager_.FindTaskById(id);
-  if (task == nullptr) return "Task not found";
+  if (task == nullptr)
+    return "Task not found";
 
   auto* recurring = dynamic_cast<RecurringTask*>(task);
-  if (recurring == nullptr) return "This task type does not support reset";
+  if (recurring == nullptr)
+    return "This task type does not support reset";
 
   recurring->ResetToNextOccurrence();
   return "Task reset to next occurrence";
@@ -589,14 +714,17 @@ std::string CommandHandler::HandleSetDeadline(const Command& command) {
 
   std::string error;
   int32_t id = 0;
-  if (!ReadTaskId(command.GetArgs(), id, error)) return error;
+  if (!ReadTaskId(command.GetArgs(), id, error))
+    return error;
 
   auto parsed = ParseDateTime(command.GetArgs()[1]);
-  if (!parsed) return "Invalid date/time format. Expected: YYYY-MM-DD or YYYY-MM-DD HH:MM";
+  if (!parsed)
+    return "Invalid date/time format. Expected: YYYY-MM-DD or YYYY-MM-DD HH:MM";
 
   std::lock_guard lock(task_mutex_);
   TaskBase* task = task_manager_.FindTaskById(id);
-  if (task == nullptr) return "Task not found";
+  if (task == nullptr)
+    return "Task not found";
 
   if (auto* reminder = dynamic_cast<ReminderTask*>(task); reminder != nullptr) {
     reminder->SetDeadline(*parsed);
@@ -610,7 +738,7 @@ std::string CommandHandler::HandleSetDeadline(const Command& command) {
 }
 
 std::string CommandHandler::HandleSetDate(const Command& command) {
-  return HandleSetDeadline(command); 
+  return HandleSetDeadline(command);
 }
 
 std::string CommandHandler::HandleSetRemindBefore(const Command& command) {

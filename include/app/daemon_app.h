@@ -9,38 +9,38 @@
 
 #include "ipc/unix_socket_server.h"
 #include "manager/task_manager.h"
-#include "notifications/notification_service.h"
 #include "storage/task_storage.h"
 
+#include "notifications/notification_service.h"
 
 class DaemonApp {
-public:
-    explicit DaemonApp(std::chrono::seconds autosave_interval, std::filesystem::path socket_server);
+ public:
+  explicit DaemonApp(std::chrono::seconds autosave_interval, std::filesystem::path socket_server);
 
-    void Run();
-    void Stop();
+  void Run();
+  void Stop();
 
-    void AutosaveLoop(std::stop_token stop_token);
+  void AutosaveLoop(std::stop_token stop_token);
 
-    void DeadlineLoop(std::stop_token stop_token);
+  void DeadlineLoop(std::stop_token stop_token);
 
-private:
-    std::chrono::seconds autosave_interval_;
+ private:
+  std::chrono::seconds autosave_interval_;
 
-    std::atomic_bool running_ = false;
+  std::atomic_bool running_ = false;
 
-    std::mutex task_mutex_;
+  std::mutex task_mutex_;
 
-    TaskManager task_manager_;
-    TaskStorage storage_;
-    NotificationService notification_service_;
+  TaskManager task_manager_;
+  TaskStorage storage_;
+  NotificationService notification_service_;
 
-    std::jthread autosave_thread_;
-    std::jthread deadline_thread_;
+  std::jthread autosave_thread_;
+  std::jthread deadline_thread_;
 
-    UnixSocketServer socket_server_;
+  UnixSocketServer socket_server_;
 
-    int32_t next_id_ = 1;
+  int32_t next_id_ = 1;
 
-    std::unordered_set<int32_t> notified_tasks_;
+  std::unordered_set<int32_t> notified_tasks_;
 };

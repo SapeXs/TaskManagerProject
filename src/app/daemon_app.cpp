@@ -9,9 +9,7 @@
 #include "commands/command_parser.h"
 
 DaemonApp::DaemonApp(std::chrono::seconds autosave_interval, std::filesystem::path socket_server)
-    : autosave_interval_(autosave_interval),
-      storage_("tasks.txt"),
-      socket_server_(socket_server) {}
+    : autosave_interval_(autosave_interval), storage_("tasks.txt"), socket_server_(socket_server) {}
 
 void DaemonApp::Run() {
   CommandParser parser;
@@ -35,11 +33,9 @@ void DaemonApp::Run() {
     }
   }
 
-  autosave_thread_ = std::jthread(
-      [this](std::stop_token stop_token) { AutosaveLoop(stop_token); });
+  autosave_thread_ = std::jthread([this](std::stop_token stop_token) { AutosaveLoop(stop_token); });
 
-  deadline_thread_ = std::jthread(
-      [this](std::stop_token stop_token) { DeadlineLoop(stop_token); });
+  deadline_thread_ = std::jthread([this](std::stop_token stop_token) { DeadlineLoop(stop_token); });
 
   std::cout << "TaskManager daemon started\n";
 
@@ -84,7 +80,8 @@ void DaemonApp::Stop() {
 void DaemonApp::AutosaveLoop(std::stop_token stop_token) {
   while (!stop_token.stop_requested()) {
     std::this_thread::sleep_for(autosave_interval_);
-    if (stop_token.stop_requested()) break;
+    if (stop_token.stop_requested())
+      break;
 
     {
       std::lock_guard lock(task_mutex_);
@@ -99,12 +96,14 @@ void DaemonApp::DeadlineLoop(std::stop_token stop_token) {
 
   while (!stop_token.stop_requested()) {
     std::this_thread::sleep_for(check_interval);
-    if (stop_token.stop_requested()) break;
+    if (stop_token.stop_requested())
+      break;
 
     {
       std::lock_guard lock(task_mutex_);
       for (const TaskBase* task : task_manager_.GetAllTasks()) {
-        if (task == nullptr) continue;
+        if (task == nullptr)
+          continue;
 
         if (task->GetState() == TaskState::kOverdue) {
           if (notified_tasks_.find(task->GetId()) == notified_tasks_.end()) {

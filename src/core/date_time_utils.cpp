@@ -5,7 +5,8 @@
 #include <iomanip>
 #include <sstream>
 
-std::optional<std::chrono::system_clock::time_point> ParseDateTime(const std::string& datetime_str) {
+std::optional<std::chrono::system_clock::time_point> ParseDateTime(
+    const std::string& datetime_str) {
   std::tm tm = {};
   tm.tm_isdst = -1;
   std::istringstream ss(datetime_str);

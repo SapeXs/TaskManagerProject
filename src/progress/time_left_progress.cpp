@@ -1,8 +1,8 @@
 #include "progress/time_left_progress.h"
 
-#include "core/date_time_utils.h"
-
 #include <string_view>
+
+#include "core/date_time_utils.h"
 
 namespace {
 constexpr int64_t kSecondsInMinute = 60;

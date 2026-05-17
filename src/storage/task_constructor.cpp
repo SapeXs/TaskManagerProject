@@ -28,8 +28,7 @@ std::unique_ptr<TaskBase> CreateTaskFromStorageFields(const std::vector<std::str
   if (type == task_names::kNameRecurringTask && fields.size() == 8) {
     auto deadline = std::chrono::system_clock::from_time_t(std::stoll(fields[6]));
     return std::make_unique<RecurringTask>(id, std::move(title), std::move(description), priority,
-                                           std::move(tags), deadline,
-                                           std::stoll(fields[7]));
+                                           std::move(tags), deadline, std::stoll(fields[7]));
   }
 
   if (type == task_names::kNameBoundedRecurringTask && fields.size() == 9) {
@@ -73,8 +72,7 @@ std::unique_ptr<TaskBase> CreateTaskFromAddOptions(int32_t id, AddTaskOptions op
     case AddTaskType::kReminder:
       return std::make_unique<ReminderTask>(
           id, std::move(options.title), std::move(options.description), options.priority,
-          std::move(options.tags),
-          options.deadline.value_or(std::chrono::system_clock::now()));
+          std::move(options.tags), options.deadline.value_or(std::chrono::system_clock::now()));
 
     case AddTaskType::kRecurring:
       if (!options.deadline.has_value() || !options.repeat_interval_seconds.has_value()) {
@@ -89,7 +87,9 @@ std::unique_ptr<TaskBase> CreateTaskFromAddOptions(int32_t id, AddTaskOptions op
     case AddTaskType::kBoundedRecurring:
       if (!options.deadline.has_value() || !options.repeat_interval_seconds.has_value() ||
           !options.repeats_left.has_value()) {
-        error = "Usage: add bounded <title> [--at <date> | --time <dur>] --interval <value> --repeats <value>";
+        error =
+            "Usage: add bounded <title> [--at <date> | --time <dur>] --interval <value> --repeats "
+            "<value>";
         return nullptr;
       }
 
