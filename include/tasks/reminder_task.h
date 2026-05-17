@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -13,9 +14,12 @@ class ReminderTask : public TaskWithProgress<TimeLeftProgress> {
   using TagContainer = TaskBase::TagContainer;
 
   ReminderTask(int32_t id, std::string title, std::string description, TaskPriority priority,
-               TagContainer tags, int64_t seconds_left);
+               TagContainer tags, std::chrono::system_clock::time_point deadline);
 
   std::string_view GetTypeName() const;
+
+  std::chrono::system_clock::time_point GetDeadline() const noexcept;
+  void SetDeadline(std::chrono::system_clock::time_point deadline) noexcept;
 
   int64_t GetSecondsLeft() const noexcept;
   void SetSecondsLeft(int64_t seconds_left) noexcept;
