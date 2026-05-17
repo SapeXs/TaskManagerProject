@@ -4,12 +4,18 @@
 
 SteppedDeadlineTask::SteppedDeadlineTask(int32_t id, std::string title, std::string description,
                                          TaskPriority priority, TagContainer tags,
-                                         std::vector<std::string> step_texts, size_t current_step)
-    : TaskWithProgress<TextProgress>(
-          id, std::move(title), std::move(description), priority, std::move(tags),
-          step_texts.empty() ? "" : step_texts[current_step], TaskState::kInProgress),
+                                         std::vector<std::string> step_texts,
+                                         std::size_t current_step)
+    : TaskWithProgress<TextProgress>(id, std::move(title), std::move(description), priority,
+                                     std::move(tags), "", TaskState::kInProgress),
       step_texts_(std::move(step_texts)),
-      current_step_(current_step) {}
+      current_step_(current_step) {
+  if (current_step_ >= step_texts_.size()) {
+    current_step_ = step_texts_.empty() ? 0 : step_texts_.size() - 1;
+  }
+
+  UpdateProgressText(TaskState::kInProgress);
+}
 
 std::string_view SteppedDeadlineTask::GetTypeName() const {
   return task_names::kNameSteppedDeadlineTask;
