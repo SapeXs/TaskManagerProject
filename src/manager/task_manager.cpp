@@ -1,6 +1,7 @@
 #include "manager/task_manager.h"
 
 #include <algorithm>
+#include <set>
 
 void TaskManager::AddTask(TaskPtr task) {
   if (task == nullptr) {
@@ -108,4 +109,20 @@ void TaskManager::Clear() noexcept {
   tasks_.clear();
   task_index_.clear();
   last_filtered_tasks_.clear();
+}
+
+std::vector<std::string> TaskManager::GetAllTags() const noexcept {
+  std::set<std::string> unique_tags;
+
+  for (const auto& task : tasks_) {
+    if (task == nullptr) {
+      continue;
+    }
+
+    for (const std::string& tag : task->GetTags()) {
+      unique_tags.insert(tag);
+    }
+  }
+
+  return std::vector<std::string>(unique_tags.begin(), unique_tags.end());
 }
