@@ -40,18 +40,39 @@ std::vector<std::string> CommandParser::Split_(const std::string& input) const {
 
   std::string current_token;
   bool in_quotes = false;
+  bool escaped = false;
 
-  for (char c : input) {
-    if (c == '"') {
+  for (char ch : input) {
+    if (escaped) {
+      current_token += ch;
+      escaped = false;
+      continue;
+    }
+
+    if (ch == '\\') {
+      escaped = true;
+      continue;
+    }
+
+    if (ch == '"') {
       in_quotes = !in_quotes;
-    } else if (c == ' ' && !in_quotes) {
+      continue;
+    }
+
+    if ((ch == ' ' || ch == '\t') && !in_quotes) {
       if (!current_token.empty()) {
         tokens.push_back(std::move(current_token));
         current_token.clear();
       }
-    } else {
-      current_token += c;
+
+      continue;
     }
+
+    current_token += ch;
+  }
+
+  if (escaped) {
+    current_token += '\\';
   }
 
   if (!current_token.empty()) {

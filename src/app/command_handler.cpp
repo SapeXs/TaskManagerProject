@@ -741,6 +741,6 @@ std::string CommandHandler::HandleSetDate(const Command& command) {
   return HandleSetDeadline(command);
 }
 
-std::string CommandHandler::HandleSetRemindBefore(const Command& command) {
+std::string CommandHandler::HandleSetRemindBefore(const Command& /*command*/) {
   return "Remind before updated";
 }
