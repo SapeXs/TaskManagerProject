@@ -46,6 +46,10 @@ std::string_view ToString(CommandType type) {
       return "overdue";
     case CommandType::kReset:
       return "reset";
+    case CommandType::kSetDeadline:
+      return "set-deadline";
+    case CommandType::kSetDate:
+      return "set-date";
     default:
       return "invalid";
   }

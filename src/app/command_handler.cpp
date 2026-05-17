@@ -448,11 +448,11 @@ std::string CommandHandler::HandleClear() {
   {
     std::lock_guard lock(task_mutex_);
     task_manager_.Clear();
-    storage_.Save(task_manager_);
     next_id_ = 1;
     ClearNotificationsLocked();
     SaveTasksLocked();
   }
+
   return "All tasks cleared";
 }
 
@@ -764,6 +764,7 @@ std::string CommandHandler::HandleSetDeadline(const Command& command) {
   } else {
     return "This task type does not support deadline";
   }
+  ForgetNotificationLocked(id);
   SaveTasksLocked();
   return "Deadline updated";
 }

@@ -2,6 +2,7 @@
 
 #include <span>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "commands/command_type.h"
@@ -18,3 +19,5 @@ class Command {
   CommandType type_;
   std::vector<std::string> args_;
 };
+
+std::string_view ToString(CommandType type);
