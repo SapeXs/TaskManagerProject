@@ -22,8 +22,8 @@ class TaskManager {
   TaskBase* FindTaskById(int32_t id) noexcept;
   const TaskBase* FindTaskById(int32_t id) const noexcept;
 
-  std::vector<TaskBase*> GetAllTasks() noexcept;
-  std::vector<const TaskBase*> GetAllTasks() const noexcept;
+  std::span<TaskBase* const> GetAllTasks() noexcept;
+  std::span<const TaskBase* const> GetAllTasks() const noexcept;
   std::vector<std::string> GetAllTags() const noexcept;
   std::span<TaskBase* const> GetLastFilteredTasks() noexcept;
 
@@ -41,6 +41,8 @@ class TaskManager {
  private:
   TaskList tasks_;
   std::unordered_map<int32_t, TaskBase*> task_index_;
+  std::vector<TaskBase*> task_views_;
+  std::vector<const TaskBase*> const_task_views_;
   std::vector<TaskBase*> last_filtered_tasks_;
 };
 

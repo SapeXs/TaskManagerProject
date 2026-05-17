@@ -71,6 +71,29 @@ std::string TaskFormatter::FormatTaskList(std::span<const TaskBase* const> tasks
   return result.empty() ? "No tasks" : result;
 }
 
+std::string TaskFormatter::FormatTaskList(std::span<TaskBase* const> tasks) {
+  if (tasks.empty()) {
+    return "No tasks";
+  }
+
+  std::string result;
+
+  for (const TaskBase* task : tasks) {
+    if (task == nullptr) {
+      continue;
+    }
+
+    result += FormatTask(*task);
+    result += '\n';
+  }
+
+  if (!result.empty() && result.back() == '\n') {
+    result.pop_back();
+  }
+
+  return result.empty() ? "No tasks" : result;
+}
+
 std::string TaskFormatter::FormatTags(const std::vector<std::string>& tags) {
   if (tags.empty()) {
     return "No tags";

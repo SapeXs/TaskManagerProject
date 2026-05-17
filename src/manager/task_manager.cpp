@@ -15,8 +15,11 @@ void TaskManager::AddTask(TaskPtr task) {
   }
 
   TaskBase* raw_task = task.get();
+
   tasks_.push_back(std::move(task));
   task_index_[id] = raw_task;
+  task_views_.push_back(raw_task);
+  const_task_views_.push_back(raw_task);
 
   last_filtered_tasks_.clear();
 }
@@ -33,6 +36,16 @@ void TaskManager::RemoveTask(int32_t id) {
       std::remove_if(tasks_.begin(), tasks_.end(),
                      [id](const TaskPtr& task) { return task != nullptr && task->GetId() == id; }),
       tasks_.end());
+
+  task_views_.erase(
+      std::remove_if(task_views_.begin(), task_views_.end(),
+                     [id](const TaskBase* task) { return task != nullptr && task->GetId() == id; }),
+      task_views_.end());
+
+  const_task_views_.erase(
+      std::remove_if(const_task_views_.begin(), const_task_views_.end(),
+                     [id](const TaskBase* task) { return task != nullptr && task->GetId() == id; }),
+      const_task_views_.end());
 
   last_filtered_tasks_.clear();
 }
@@ -55,30 +68,12 @@ const TaskBase* TaskManager::FindTaskById(int32_t id) const noexcept {
   return it->second;
 }
 
-std::vector<TaskBase*> TaskManager::GetAllTasks() noexcept {
-  std::vector<TaskBase*> result;
-  result.reserve(tasks_.size());
-
-  for (const auto& task : tasks_) {
-    if (task != nullptr) {
-      result.emplace_back(task.get());
-    }
-  }
-
-  return result;
+std::span<TaskBase* const> TaskManager::GetAllTasks() noexcept {
+  return std::span<TaskBase* const>(task_views_);
 }
 
-std::vector<const TaskBase*> TaskManager::GetAllTasks() const noexcept {
-  std::vector<const TaskBase*> result;
-  result.reserve(tasks_.size());
-
-  for (const auto& task : tasks_) {
-    if (task != nullptr) {
-      result.emplace_back(task.get());
-    }
-  }
-
-  return result;
+std::span<const TaskBase* const> TaskManager::GetAllTasks() const noexcept {
+  return std::span<const TaskBase* const>(const_task_views_);
 }
 
 std::span<TaskBase* const> TaskManager::GetLastFilteredTasks() noexcept {
@@ -108,6 +103,8 @@ bool TaskManager::Empty() const noexcept {
 void TaskManager::Clear() noexcept {
   tasks_.clear();
   task_index_.clear();
+  task_views_.clear();
+  const_task_views_.clear();
   last_filtered_tasks_.clear();
 }
 
