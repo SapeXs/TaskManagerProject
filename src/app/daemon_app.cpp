@@ -4,6 +4,7 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
+#include <utility>
 #include <vector>
 
 #include "app/command_handler.h"
@@ -19,8 +20,11 @@ struct DeadlineNotification {
 
 }  // namespace
 
-DaemonApp::DaemonApp(std::chrono::seconds autosave_interval, std::filesystem::path socket_server)
-    : autosave_interval_(autosave_interval), storage_("tasks.txt"), socket_server_(socket_server) {}
+DaemonApp::DaemonApp(std::chrono::seconds autosave_interval, std::filesystem::path socket_path,
+                     std::filesystem::path storage_path)
+    : autosave_interval_(autosave_interval),
+      storage_(std::move(storage_path)),
+      socket_server_(std::move(socket_path)) {}
 
 void DaemonApp::Run() {
   CommandParser parser;

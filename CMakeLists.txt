@@ -49,6 +49,7 @@ endif()
 
 add_library(
   task_manager_core
+  src/app/app_paths.cpp
   src/core/task_base.cpp
   src/core/task_converters.cpp
   src/core/duration_parser.cpp

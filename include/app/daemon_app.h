@@ -15,7 +15,8 @@
 
 class DaemonApp {
  public:
-  explicit DaemonApp(std::chrono::seconds autosave_interval, std::filesystem::path socket_server);
+  DaemonApp(std::chrono::seconds autosave_interval, std::filesystem::path socket_path,
+            std::filesystem::path storage_path);
 
   void Run();
   void Stop();

@@ -2,6 +2,7 @@
 #include <string>
 #include <string_view>
 
+#include "app/app_paths.h"
 #include "ipc/unix_socket_client.h"
 
 namespace {
@@ -48,7 +49,7 @@ int main(int argc, char** argv) {
     request += QuoteArg(argv[i]);
   }
 
-  UnixSocketClient client("/tmp/taskmanager.sock");
+  UnixSocketClient client(app_paths::GetSocketPath());
   std::string response = client.SendRequest(request);
 
   if (response.empty()) {
