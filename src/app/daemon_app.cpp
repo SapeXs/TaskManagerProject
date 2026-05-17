@@ -24,7 +24,7 @@ DaemonApp::DaemonApp(std::chrono::seconds autosave_interval, std::filesystem::pa
 
 void DaemonApp::Run() {
   CommandParser parser;
-  CommandHandler handler(task_manager_, storage_, task_mutex_, next_id_);
+  CommandHandler handler(task_manager_, storage_, task_mutex_, next_id_, notified_tasks_);
 
   if (!socket_server_.Start()) {
     std::cerr << "Failed to start socket server\n";

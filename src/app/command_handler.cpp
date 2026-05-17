@@ -154,8 +154,13 @@ bool ReadInt32Value(const std::string& text, int32_t& value, std::string& error)
 }  // namespace
 
 CommandHandler::CommandHandler(TaskManager& task_manager, TaskStorage& storage,
-                               std::mutex& task_mutex, int32_t& next_id)
-    : task_manager_(task_manager), storage_(storage), task_mutex_(task_mutex), next_id_(next_id) {}
+                               std::mutex& task_mutex, int32_t& next_id,
+                               std::unordered_set<int32_t>& notified_tasks)
+    : task_manager_(task_manager),
+      storage_(storage),
+      task_mutex_(task_mutex),
+      next_id_(next_id),
+      notified_tasks_(notified_tasks) {}
 
 std::string CommandHandler::Handle(const Command& command) {
   switch (command.GetType()) {
@@ -424,6 +429,7 @@ std::string CommandHandler::HandleRemove(const Command& command) {
     if (task_manager_.FindTaskById(id) == nullptr)
       return "Task not found";
     task_manager_.RemoveTask(id);
+    ForgetNotificationLocked(id);
     SaveTasksLocked();
   }
   return "Task removed";
@@ -447,6 +453,7 @@ std::string CommandHandler::HandleClear() {
     task_manager_.Clear();
     storage_.Save(task_manager_);
     next_id_ = 1;
+    ClearNotificationsLocked();
     SaveTasksLocked();
   }
   return "All tasks cleared";
@@ -573,12 +580,14 @@ std::string CommandHandler::HandleSetTime(const Command& command) {
 
   if (auto* reminder = dynamic_cast<ReminderTask*>(task); reminder != nullptr) {
     reminder->SetSecondsLeft(seconds);
+    ForgetNotificationLocked(id);
     SaveTasksLocked();
     return "Time updated";
   }
 
   if (auto* recurring = dynamic_cast<RecurringTask*>(task); recurring != nullptr) {
     recurring->SetSecondsLeft(seconds);
+    ForgetNotificationLocked(id);
     SaveTasksLocked();
     return "Time updated";
   }
@@ -609,6 +618,7 @@ std::string CommandHandler::HandleSetInterval(const Command& command) {
     return "This task type does not support interval";
 
   recurring->SetRepeatIntervalSeconds(interval);
+  ForgetNotificationLocked(id);
   SaveTasksLocked();
   return "Interval updated";
 }
@@ -681,6 +691,7 @@ std::string CommandHandler::HandleAdvance(const Command& command) {
     return "This task type does not support steps";
 
   stepped->AdvanceStep();
+  ForgetNotificationLocked(id);
   SaveTasksLocked();
   return "Step advanced";
 }
@@ -725,6 +736,7 @@ std::string CommandHandler::HandleReset(const Command& command) {
     return "This task type does not support reset";
 
   recurring->ResetToNextOccurrence();
+  ForgetNotificationLocked(id);
   SaveTasksLocked();
   return "Task reset to next occurrence";
 }
@@ -769,4 +781,12 @@ std::string CommandHandler::HandleSetRemindBefore(const Command& /*command*/) {
 
 void CommandHandler::SaveTasksLocked() {
   storage_.Save(task_manager_);
+}
+
+void CommandHandler::ForgetNotificationLocked(int32_t task_id) {
+  notified_tasks_.erase(task_id);
+}
+
+void CommandHandler::ClearNotificationsLocked() {
+  notified_tasks_.clear();
 }
