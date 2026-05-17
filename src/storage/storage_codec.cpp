@@ -1,10 +1,8 @@
 #include "storage/storage_codec.h"
 
-#include <sstream>
-
 #include "core/task_converters.h"
 
-std::string EscapeStorageField(const std::string& value) {
+std::string EscapeStorageField(std::string_view value) {
   std::string result;
 
   for (char ch : value) {
@@ -17,7 +15,7 @@ std::string EscapeStorageField(const std::string& value) {
   return result;
 }
 
-std::vector<std::string> SplitStorageLine(const std::string& line) {
+std::vector<std::string> SplitStorageLine(std::string_view line) {
   std::vector<std::string> result;
   std::string current;
   bool escaped = false;
@@ -56,20 +54,32 @@ std::string TagsToStorageString(const TaskBase::TagContainer& tags) {
   return result;
 }
 
-TaskBase::TagContainer ParseStorageTags(const std::string& value) {
+TaskBase::TagContainer ParseStorageTags(std::string_view value) {
   TaskBase::TagContainer tags;
-  std::stringstream stream(value);
-  std::string tag;
+  std::size_t start = 0;
 
-  while (std::getline(stream, tag, ',')) {
+  while (start <= value.size()) {
+    std::size_t end = value.find(',', start);
+    if (end == std::string_view::npos) {
+      end = value.size();
+    }
+
+    std::string_view tag = value.substr(start, end - start);
+
     if (!tag.empty()) {
-      tags.insert(tag);
+      tags.insert(std::string(tag));
+    }
+
+    start = end + 1;
+
+    if (end == value.size()) {
+      break;
     }
   }
 
   return tags;
 }
 
-TaskPriority ParseTaskPriority(const std::string& value) {
-  return TaskPriorityFromStorageValue(std::stoi(value));
+TaskPriority ParseTaskPriority(std::string_view value) {
+  return TaskPriorityFromStorageValue(std::stoi(std::string(value)));
 }

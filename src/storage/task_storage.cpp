@@ -20,8 +20,7 @@ void TaskStorage::Save(const TaskManager& manager) {
   }
 
   for (const TaskBase* task : manager.GetAllTasks()) {
-    file << EscapeStorageField(std::string(task->GetTypeName())) << '|' << task->GetId() << '|'
-         << EscapeStorageField(task->GetTitle()) << '|'
+    file << task->GetId() << '|' << EscapeStorageField(task->GetTitle()) << '|'
          << EscapeStorageField(task->GetDescription()) << '|'
          << TaskPriorityToStorageValue(task->GetPriority()) << '|'
          << EscapeStorageField(TagsToStorageString(task->GetTags()));
