@@ -21,12 +21,27 @@
 namespace {
 
 std::string JoinArgs(std::span<const std::string> args) {
+  std::size_t result_size = 0;
+
+  for (const std::string& arg : args) {
+    result_size += arg.size();
+  }
+
+  if (!args.empty()) {
+    result_size += args.size() - 1;
+  }
+
   std::string result;
+  result.reserve(result_size);
+
   for (std::size_t i = 0; i < args.size(); ++i) {
-    if (i > 0)
+    if (i > 0) {
       result += ' ';
+    }
+
     result += args[i];
   }
+
   return result;
 }
 
