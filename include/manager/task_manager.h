@@ -24,6 +24,7 @@ class TaskManager {
 
   std::vector<TaskBase*> GetAllTasks() noexcept;
   std::vector<const TaskBase*> GetAllTasks() const noexcept;
+  std::vector<std::string> GetAllTags() const noexcept;
   std::span<TaskBase* const> GetLastFilteredTasks() noexcept;
 
   std::span<TaskBase* const> FilterByState(TaskState state) noexcept;
