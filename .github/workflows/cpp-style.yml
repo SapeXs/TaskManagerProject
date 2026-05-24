@@ -1,0 +1,24 @@
+name: C++ style
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  style:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install tools
+        run: sudo apt-get update && sudo apt-get install -y clang-format clang-tidy cmake g++ && sudo apt install -y libnotify-dev pkg-config
+
+      - name: Check clang-format
+        run: ./scripts/format_cpp.sh check
+
+      - name: Build
+        run: cmake -S . -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && cmake --build build -j2
+
+      - name: Run clang-tidy
+        run: ./scripts/tidy_cpp.sh
