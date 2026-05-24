@@ -1,16 +1,62 @@
+# CMake build directories
 build/
+build-*/
+cmake-build-*/
+out/
+_bin/
+_build/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+CTestTestfile.cmake
+DartConfiguration.tcl
+install_manifest.txt
 compile_commands.json
-tasks.txt
+Testing/
 
-.vscode/
-.idea/
-
+# Compiled objects / binaries
 *.o
 *.obj
 *.a
+*.lib
 *.so
+*.dylib
 *.dll
 *.exe
 *.out
+*.app
 *.dwo
 *.pdb
+*.ilk
+
+# Generated coverage / profiling
+*.gcno
+*.gcda
+*.gcov
+coverage/
+htmlcov/
+
+# Local runtime data
+tasks.txt
+*.tasks
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Cache folders
+.cache/
+.ccache/
+.clangd/
